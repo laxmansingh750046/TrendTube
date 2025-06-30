@@ -119,16 +119,16 @@ const loginUser = asyncHandler(async(req,res)=>{
 
     //req body -> data
 
-    const {username, email, password} = await req.body;
+    const {identifier, password} = req.body;
     
     //username or email
-    if(!(username || email)){
-        throw new ApiError(400,"username or mail is required");
+    if(!(identifier)){
+        throw new ApiError(400,"username or email is required");
     }
 
     //find user
     const user = await User.findOne({
-        $or:[{email},{username}]
+        $or:[{email: identifier},{username: identifier}]
     });
     
     if(!user){
@@ -244,7 +244,7 @@ const getCurrentUser = asyncHandler(async(req,res)=>{
     if(!req.user)throw new ApiError(500, "user is not logged")
     return res
     .status(200)
-    .json(new ApiResponse(200,req.user," Current user fetched succesfully"));
+    .json(new ApiResponse(200,{user: req.user}," Current user fetched succesfully"));
 });
 
 const deleteAndUpdateImage = async(req, res, type)=>{

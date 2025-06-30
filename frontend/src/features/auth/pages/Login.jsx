@@ -1,0 +1,10 @@
+// features/auth/pages/Register.jsx
+import LoginForm from "../components/LoginForm";
+
+const Login = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <LoginForm />
+  </div>
+);
+
+export default Login;
