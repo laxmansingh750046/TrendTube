@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
-import authService from '../api'
+import authServices from '../services/authServices.js'
 import {Link, useNavigate} from 'react-router-dom'
 import {setUser} from '../authSlice'
-import {Button, InputField, Logo} from '../../../shared/components'
+import {Button, InputField, Logo} from '../../../shared/components/index.js'
 import {useDispatch, useSelector} from 'react-redux'
 import { useForm} from 'react-hook-form'
 
@@ -28,9 +28,9 @@ function RegisterForm() {
         formData.append("coverImage", data.coverImage[0]);
       }
       formData.append("password", data.password);
-      const accountCreated = await authService.registerUser(formData);
+      const accountCreated = await authServices.registerUser(formData);
       if(accountCreated){
-        const userData = await authService.getCurrentUser();
+        const userData = await authServices.getCurrentUser();
         if(userData) {
         dispatch(setUser({user: userData.user}));}
         navigate("/");

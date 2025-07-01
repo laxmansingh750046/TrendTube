@@ -27,10 +27,10 @@ const getCurrentUser = async () => {
   }
 };
 
-const authService = {
+const authServices = {
   registerUser,
   loginUser,
   getCurrentUser,
 };
 
-export default authService;
+export default authServices;

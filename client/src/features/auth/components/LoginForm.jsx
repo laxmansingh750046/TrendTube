@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { login as authLogin } from '../authSlice';
+import { setUser as authLogin } from '../authSlice.js';
 import { Button, InputField, Logo } from '../../../shared/components';
 import { useDispatch } from 'react-redux';
-import authService from '../../../services/authService.js';
+import authServices from '../services/authServices.js';
 import { useForm } from 'react-hook-form';
 
 function Login() {
@@ -24,9 +24,9 @@ function Login() {
     setError('');
     setLoading(true);
     try {
-      const session = await authService.login(data);
+      const session = await authServices.login(data);
       if (session) {
-        const userData = await authService.getCurrentUser();
+        const userData = await authServices.getCurrentUser();
         if (userData) dispatch(authLogin({ user: userData.user }));
         navigate('/');
       }

@@ -13,6 +13,11 @@ const commentSchema = new Schema(
                type: Schema.Types.ObjectId,
                ref: "Video"
           },
+          parentComment: {
+               type: Schema.Types.ObjectId,
+               ref: "Comment", 
+               default: null,
+          },
           owner: {
                type: Schema.Types.ObjectId,
                ref: "User"

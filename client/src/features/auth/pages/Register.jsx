@@ -1,5 +1,5 @@
 // features/auth/pages/Register.jsx
-import RegisterForm from "../components/RegisterForm";
+import RegisterForm from "../components/RegisterForm.jsx";
 
 const Register = () => (
   <div className="min-h-screen flex items-center justify-center">

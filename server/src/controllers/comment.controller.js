@@ -28,7 +28,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
     const comments = await Comment.aggregate([
         {
             $match: {
-                vide : mongoose.Types.ObjectId(videoId)
+                video : mongoose.Types.ObjectId(videoId)
             }
         },
         {
@@ -101,6 +101,36 @@ const addComment = asyncHandler(async (req, res) => {
       )
 });
 
+const addReply = asyncHandler(async (req, res) => {
+    const {commentId} = req.params
+    
+    const {content} = req.body;
+
+    if(!mongoose.Types.ObjectId.isValid(commentId)){
+        throw new ApiError(400, "Invalid Video id format");
+    }
+
+    const comment = await Comment.findById(commentId);
+    if(!comment){
+        throw new ApiError(404, "Comment not found with given ID");
+    }
+
+    const reply = await Comment.create({
+        content,
+        parentComment: commentId,
+        owner: req.user._id
+    });
+
+    if(!reply){
+        throw new ApiError(500, "Something went wrong while creaing reply");
+    }
+
+    return res.status(201)
+      .json(
+        new ApiResponse(201, reply, "Reply added successfully")
+      )
+});
+
 const updateComment = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
     const { content } = req.body;
@@ -157,5 +187,6 @@ export {
     getVideoComments, 
     addComment, 
     updateComment,
-     deleteComment
+    deleteComment,
+    addReply
 }
