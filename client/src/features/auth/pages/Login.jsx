@@ -1,4 +1,3 @@
-// features/auth/pages/Register.jsx
 import LoginForm from "../components/LoginForm.jsx";
 
 const Login = () => (

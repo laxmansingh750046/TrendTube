@@ -103,7 +103,19 @@ const registerUser = asyncHandler(async(req,res)=>{
         throw new ApiError(500," Something went wrong while registering user");
      }
 
-     return res.status(201).json(
+      // access and refresh token
+    const{accessToken} = await generateAccessAndRefereshTokens(createdUser._id);
+    
+
+    const options = {
+        httpOnly: true,
+        secure: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    }
+
+    return res.status(201)
+     .cookie("accessToken",accessToken,options)
+     .json(
         new ApiResponse(200, createdUser, "User Registered Successfully")
      );
 });
@@ -241,7 +253,8 @@ const refreshAccessToken = asyncHandler(async (req,res)=>{
 });
 
 const getCurrentUser = asyncHandler(async(req,res)=>{
-    if(!req.user)throw new ApiError(500, "user is not logged")
+    if(!req.user){throw new ApiError(500, "user is not logged");}
+    
     return res
     .status(200)
     .json(new ApiResponse(200,{user: req.user}," Current user fetched succesfully"));

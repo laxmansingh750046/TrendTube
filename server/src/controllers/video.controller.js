@@ -46,7 +46,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
     ]);
     const totalCount = await Video.countDocuments(matchConditions);
     res.status(200).json(new ApiResponse(200,{
-        videos,
+        videos: videos || [],
         page: parseInt(page),
         limit: parseInt(limit),
         total: totalCount

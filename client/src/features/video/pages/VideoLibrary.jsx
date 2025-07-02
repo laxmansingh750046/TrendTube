@@ -8,11 +8,10 @@ function VideoLibrary() {
   useEffect(() => {
     videoService.getAllVideos().then(res => setVideos(res.data.videos));
   }, []);
-  return <div>home video library </div>
  
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-      {videos.map(video => <VideoCard key={video._id} video={video} />)}
+      {videos?.map(video => <VideoCard key={video._id} video={video} />)}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import authServices from './features/auth/services/authServices.js';
 import Header from './shared/layout/Header.jsx';
 import Footer from './shared/layout/Footer.jsx';
 import { useDispatch } from 'react-redux';
-import { setUser } from './features/auth/authSlice';
+import { setUser, logout } from './features/auth/authSlice';
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -13,7 +13,7 @@ function App() {
     setLoading(true);
      authServices.getCurrentUser()
      .then(userData =>{
-      if(userData){
+       if(userData){
         dispatch(setUser({user:userData}));
       }else{
         dispatch(logout());

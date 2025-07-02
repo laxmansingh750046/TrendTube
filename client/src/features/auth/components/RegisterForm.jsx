@@ -36,7 +36,9 @@ function RegisterForm() {
         navigate("/");
       }
     } catch (err) {
+      console.log("ERR",err)
       setError(err.message);
+      throw err;
     }
   }
 

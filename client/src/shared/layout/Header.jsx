@@ -13,6 +13,7 @@ function Header() {
     { name: 'Home', slug: '/', active: true },
     { name: 'Login', slug: '/login', active: !authStatus },
     { name: 'Signup', slug: '/register', active: !authStatus },
+    { name: 'Upload', slug: '/upload', active: authStatus },
   ];
 
   const handleNavClick = (slug) => {
