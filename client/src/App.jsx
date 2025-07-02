@@ -3,10 +3,12 @@ import { Outlet } from 'react-router-dom';
 import authServices from './features/auth/services/authServices.js';
 import Header from './shared/layout/Header.jsx';
 import Footer from './shared/layout/Footer.jsx';
+import { useDispatch } from 'react-redux';
 import { setUser } from './features/auth/authSlice';
 
 function App() {
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   useEffect(() => {
     setLoading(true);
      authServices.getCurrentUser()

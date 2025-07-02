@@ -2,7 +2,7 @@ import API from "../../../services/axios";
 
 const registerUser = async (formData) => {
   try {
-    const res = await API.post("/user/register", formData);
+    const res = await API.post("/users/register", formData);
     return res.data;
   } catch (error) {
     throw error.response?.data || error.message;
@@ -11,7 +11,7 @@ const registerUser = async (formData) => {
 
 const loginUser = async (credentials) => {
   try {
-    const res = await API.post("/user/login", credentials);
+    const res = await API.post("/users/login", credentials);
     return res.data;
   } catch (error) {
     throw error.response?.data || error.message;
@@ -20,7 +20,7 @@ const loginUser = async (credentials) => {
 
 const getCurrentUser = async () => {
   try {
-    const res = await API.get("/user/current-user");
+    const res = await API.get("/users/current-user");
     return res.data;
   } catch (error) {
     throw error.response?.data || error.message;

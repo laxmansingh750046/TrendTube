@@ -12,7 +12,7 @@ function RegisterForm() {
   const dispatch = useDispatch();
   const [error, setError] = useState('');  
   const {register, handleSubmit, formState: {errors}} = useForm();
-
+  
   const createAccount = async (data) => {
     setError('');
     try {

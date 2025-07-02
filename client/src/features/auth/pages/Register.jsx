@@ -1,10 +1,9 @@
-// features/auth/pages/Register.jsx
 import RegisterForm from "../components/RegisterForm.jsx";
 
-const Register = () => (
-  <div className="min-h-screen flex items-center justify-center">
+const Register = () => {
+  return (<div className="min-h-screen flex items-center justify-center">
     <RegisterForm />
-  </div>
-);
+  </div>)
+};
 
 export default Register;

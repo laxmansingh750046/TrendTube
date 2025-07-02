@@ -1,16 +1,16 @@
 import API from "../../../services/axios.js";
 
-const getAllVideos = () => API.get("/video");
-const getVideoById = (id) => API.get(`/video/${id}`);
+const getAllVideos = () => API.get("/videos");
+const getVideoById = (id) => API.get(`/videos/${id}`);
 const publishAVideo = (formData) =>
-  API.post("/video", formData);
-const deleteVideo = (id) => API.delete(`/video/${id}`);
+  API.post("/videos", formData);
+const deleteVideo = (id) => API.delete(`/videos/${id}`);
 const updateVideo = (id, formData) =>
-  API.patch(`/video/${id}`, formData);
+  API.patch(`/videos/${id}`, formData);
 const togglePublishStatus = (id) =>
-  API.patch(`/video/toggle/publish/${id}`);
+  API.patch(`/videos/toggle/publish/${id}`);
 
-export default {
+const videoService = {
   getAllVideos,
   getVideoById,
   publishAVideo,
@@ -18,3 +18,5 @@ export default {
   updateVideo,
   togglePublishStatus
 };
+
+export default videoService;

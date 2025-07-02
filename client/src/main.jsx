@@ -23,17 +23,18 @@ const router = createBrowserRouter([
     path: '/',
     element: <App />,
     children: [
+      { path: '/', element: <AuthLayout authentication={false}> <VideoLibrary /> </AuthLayout> },
+      { path: '/login',  element:<AuthLayout authentication={false}> <Login /> </AuthLayout>},
+      { path: '/register', element:<AuthLayout authentication={false}> <Register /> </AuthLayout>},
+      { path: '/upload', element: <AuthLayout authentication={true}> <VideoLibrary /> </AuthLayout> },
       { path: 'feed', element: <AuthLayout authentication={true}> <TweetFeed /> </AuthLayout> },
       { path: 'tweet/:id', element: <AuthLayout authentication={true}> <TweetDetails /> </AuthLayout> },
-      { path: 'video', element: <AuthLayout authentication={true}> <VideoLibrary /> </AuthLayout> },
       { path: 'video/:videoId', element: <AuthLayout authentication={true}> <VideoDetail /> </AuthLayout> },
       { path: 'u/:username', element: <AuthLayout authentication={true}> <ChannelPage /> </AuthLayout> },
       { path: 'channel/edit', element: <AuthLayout authentication={true}> <EditProfile /> </AuthLayout> },
       { path: 'history', element: <AuthLayout authentication={true}> <WatchHistoryPage /> </AuthLayout> },
     ]
   },
-  { path: '/login', element: <Login /> },
-  { path: '/register', element: <Register /> }
 ]);
 
 createRoot(document.getElementById('root')).render(
