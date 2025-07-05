@@ -11,7 +11,8 @@ const getVideoComments = async (videoId,page=1,limit=10)=>{
 
 const getCommentReply = async (commentId)=>{
     try {
-        console.log("commplete get comment reply function");//TODO
+        const res = await API.get(`/comments/r/${commentId}`);
+        return res?.data?.data?.replies || [];
     } catch (error) {
         throw error.response?.data || error.message;
     }
@@ -28,10 +29,21 @@ const onLike = async (commentId)=>{
 
 const onReplySubmit = async (commentId, content)=>{
     try {
-        const res = await API.post(`/comments/${commentId}`,{
+        const res = await API.post(`/comments/r/${commentId}`,{
             content
         });
-        return res?.data;
+        return res?.data?.data?.reply;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
+}
+
+const onCommentSubmit = async (videoId, content)=>{
+    try {
+        const res = await API.post(`/comments/${videoId}`,{
+            content
+        });
+        return res?.data?.data.responseComment;
     } catch (error) {
         throw error.response?.data || error.message;
     }
@@ -41,7 +53,8 @@ const commentService = {
     getVideoComments,
     onLike,
     onReplySubmit,
-    getCommentReply
+    getCommentReply,
+    onCommentSubmit
 };
 
 export default commentService;

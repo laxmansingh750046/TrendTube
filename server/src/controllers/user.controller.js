@@ -104,17 +104,18 @@ const registerUser = asyncHandler(async(req,res)=>{
      }
 
       // access and refresh token
-    const{accessToken} = await generateAccessAndRefereshTokens(createdUser._id);
+    const{accessToken,refreshToken} = await generateAccessAndRefereshTokens(createdUser._id);
     
 
     const options = {
         httpOnly: true,
         secure: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: 30 * 24 * 60 * 60 * 1000
     }
 
     return res.status(201)
      .cookie("accessToken",accessToken,options)
+     .cookie("refreshToken",refreshToken,options)
      .json(
         new ApiResponse(200, createdUser, "User Registered Successfully")
      );
@@ -167,6 +168,7 @@ const loginUser = asyncHandler(async(req,res)=>{
 
     return res.status(200)
     .cookie("accessToken",accessToken,options)
+    .cookie("refreshToken",refreshToken,options)
     .json(
         new ApiResponse(
             200,
@@ -229,19 +231,20 @@ const refreshAccessToken = asyncHandler(async (req,res)=>{
     
         const options ={
             httpOnly: true,
-            secure: true
+            secure: true,
+            maxAge: 30 * 24 * 60 * 60 * 1000
         }
     
         const {accessToken,refreshToken} = await generateAccessAndRefereshTokens(user._id);
     
         return res
         .status(200)
-        .cookies("accessToken",accessToken,options)
+        .cookie("accessToken",accessToken,options)
         .cookie("refreshToken",refreshToken,options)
         .json(
             new ApiResponse(
                 200,
-                {accessToken,refreshToken},
+                {},
                 "AccessToken refreshed"
             )
         )

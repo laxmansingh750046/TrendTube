@@ -21,6 +21,10 @@ const commentSchema = new Schema(
           owner: {
                type: Schema.Types.ObjectId,
                ref: "User"
+          },
+          repliesCount: {
+               type: Number,
+               default: 0
           }
      },
      {

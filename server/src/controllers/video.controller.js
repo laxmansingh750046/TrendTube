@@ -9,7 +9,6 @@ import {getVideoDuration} from "../utils/getVideoDuration.js"
 
 const getAllVideos = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, query, sortBy = "createdAt", sortType = -1, userId } = req.query;
-    
     const matchConditions = {
         isPublished: true
     };
@@ -31,6 +30,17 @@ const getAllVideos = asyncHandler(async (req, res) => {
         { $skip: (parseInt(page) - 1) * parseInt(limit) },
         { $limit: parseInt(limit) },
         {
+          $lookup: {
+            from: "users",
+            localField: "owner",
+            foreignField: "_id",
+            as: "owner"   
+          }
+        },
+        {
+          $unwind: "$owner"
+        },
+        {
             $project: {
                 _id: 1,
                 videoFile: 1,
@@ -40,7 +50,9 @@ const getAllVideos = asyncHandler(async (req, res) => {
                 duration: 1,
                 views: 1,
                 createdAt: 1,
-                updatedAt: 1
+                updatedAt: 1,
+                username: "$owner.username",
+                avatar: "$owner.avatar",
             }
         }
     ]);
@@ -66,10 +78,10 @@ const publishAVideo = asyncHandler(async (req, res) => {
     if(!thumbnailPath)throw new ApiError(400, "thumbnail not present");
 
     const videoUploaded = await uploadOnCloudinary(videofilePath);
-    if(!videoUploaded)throw new ApiError(500, "something went wrong while uploading video");
+    if(!videoUploaded)throw new ApiError(501, "something went wrong while uploading video");
 
     const thumbnailUploaded = await uploadOnCloudinary(thumbnailPath);
-    if(!thumbnailUploaded)throw new ApiError(500, "something went wrong while uploading thumbnail");
+    if(!thumbnailUploaded)throw new ApiError(502, "something went wrong while uploading thumbnail");
 
     const video = await Video.create({
         videoFile: videoUploaded.url,

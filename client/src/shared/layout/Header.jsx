@@ -22,7 +22,7 @@ function Header() {
   };
 
   return (
-    <header className="relative py-3 shadow bg-gray-500 text-white">
+    <header className="relative py-3 shadow bg-slate-900 text-white">
       <Container>
         <nav className="flex items-center justify-between">
           {/* Logo */}
@@ -63,7 +63,7 @@ function Header() {
       
         
         {menuOpen && (
-          <ul className="absolute top-full left-0 w-full bg-gray-600 sm:hidden flex flex-col items-start px-4 py-2 space-y-2 shadow-lg z-50">
+          <ul className="absolute top-full left-0 w-ful sm:hidden flex flex-col items-start px-4 py-2 space-y-2 shadow-lg z-50">
             {navItems.map(
               (item) =>
                 item.active && (

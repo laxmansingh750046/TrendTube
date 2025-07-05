@@ -24,10 +24,10 @@ function App() {
      .finally(()=>setLoading(false));
   }, [])
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen bg-slate-900 flex flex-col">
       <Header />
-
-      <main className="flex-1 container mx-auto px-4 py-6">
+      
+      <main className="flex-1 bg-slate-900 w-[100%] py-1">
         <Outlet />
       </main>
 

@@ -20,13 +20,13 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
     }
 
     const existingLike = await Like.findOne({
-        likeBy: req.user._id,
+        owner: req.user._id,
         video: videoId    
     });
 
     if (existingLike) {
         const result = await Like.deleteOne({
-            likeBy: req.user._id,
+            owner: req.user._id,
             video: videoId    
         });
 
@@ -39,7 +39,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
         );
     } else {
         const newLike = await Like.create({
-            likeBy: req.user._id,
+            owner: req.user._id,
             video: videoId    
         });
 
@@ -53,51 +53,53 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
     }
 });
 
+// Toggle like/unlike for a comment
 const toggleCommentLike = asyncHandler(async (req, res) => {
-    const {commentId} = req.params
-    
-    if (!mongoose.Types.ObjectId.isValid(commentId)) {
-        throw new ApiError(400, "Invalid comment ID");
-    }
+  const { commentId } = req.params;
+  // 1. Validate ID
+  if (!mongoose.Types.ObjectId.isValid(commentId)) {
+    throw new ApiError(400, "Invalid comment ID");
+  }
 
-    const comment = await Comment.findById(commentId);
-    if (!comment) {
-        throw new ApiError(404, "Comment not found");
-    }
+  // 2. Check if comment exists
+  const comment = await Comment.findById(commentId);
+  if (!comment) {
+    throw new ApiError(404, "Comment not found");
+  }
+  // 3. Check if already liked by user
+  const existingLike = await Like.findOne({
+    owner: req.user._id,
+    comment: new mongoose.Types.ObjectId(commentId),
+  });
 
-    const existingLike = await Like.findOne({
-        likeBy: req.user._id,
-        comment: commentId    
+  // 4. If liked -> unlike
+  if (existingLike) {
+    const result = await Like.deleteOne({
+      _id: existingLike._id,
     });
 
-    if (existingLike) {
-        const result = await Like.deleteOne({
-            likeBy: req.user._id,
-            comment: commentId    
-        });
-
-        if (result.deletedCount === 0) {
-            throw new ApiError(500, "Unable to unlike the comment");
-        }
-
-        return res.status(200).json(
-            new ApiResponse(200, null, "Comment unliked successfully")
-        );
-    } else {
-        const newLike = await Like.create({
-            likeBy: req.user._id,
-            comment: commentId    
-        });
-
-        if (!newLike) {
-            throw new ApiError(500, "Unable to like the comment");
-        }
-
-        return res.status(200).json(
-            new ApiResponse(200, newLike, "Comment liked successfully")
-        );
+    if (result.deletedCount === 0) {
+      throw new ApiError(500, "Unable to unlike the comment");
     }
-})
+    
+    return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Comment unliked successfully"));
+}
+
+const newLike = await Like.create({
+    owner: req.user._id,
+    comment: commentId
+});
+
+if (!newLike) {
+    throw new ApiError(500, "Unable to like the comment");
+}
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, newLike, "Comment liked successfully"));
+});
 
 const toggleTweetLike = asyncHandler(async (req, res) => {
     const {tweetId} = req.params
@@ -112,13 +114,13 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
     }
 
     const existingLike = await Like.findOne({
-        likeBy: req.user._id,
+        owner: req.user._id,
         tweet: tweetId    
     });
 
     if (existingLike) {
         const result = await Like.deleteOne({
-            likeBy: req.user._id,
+            owner: req.user._id,
             tweet: tweetId    
         });
 
@@ -131,7 +133,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
         );
     } else {
         const newLike = await Like.create({
-            likeBy: req.user._id,
+            owner: req.user._id,
             tweet: tweetId    
         });
 

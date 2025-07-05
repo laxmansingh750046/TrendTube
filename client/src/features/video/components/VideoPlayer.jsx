@@ -1,9 +1,13 @@
-function VideoPlayer({ videoUrl }) {
+import { AdvancedVideo } from '@cloudinary/react';
+import { Cloudinary } from '@cloudinary/url-gen';
+
+const cld = new Cloudinary({ cloud: { cloudName: 'dri819usd' } });
+
+function VideoPlayer({ publicId }) {
+  const myVideo = cld.video(publicId); 
   return (
-    <video controls className="w-full rounded">
-      <source src={videoUrl} type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
+      <AdvancedVideo cldVid={myVideo} controls />
   );
 }
+
 export default VideoPlayer;

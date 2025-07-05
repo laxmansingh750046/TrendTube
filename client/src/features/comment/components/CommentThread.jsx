@@ -1,37 +1,34 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import CommentItem from "./CommentItem";
-import CommentBox from "./CommentBox";
-import CommentReplyBox from "./CommentReplyBox";
+import CommentReplyContainer from "./CommentReplyContainer";
 
-const CommentThread = ({ comment, getCommentReply,onReplySubmit, onLike }) => {
-  const [showReplyBox, setShowReplyBox] = useState(false);
+const CommentThread = ({comment}) => {
   const [showReply, setShowReply] = useState(false);
-  
-  const handleReply = (replyText) => {
-    onReplySubmit(comment._id, replyText);
-    setShowReplyBox(false);
-  };
-       
+
   return (
-    <div className="mb-4">
+    <div className="mb-4 border-b border-gray-500 pb-4">
       <CommentItem
         comment={comment}
-        onLike={onLike}
-        onReplyClick={() => setShowReplyBox(!showReplyBox)}
+        onSuccess={()=>{}}
       />
 
-      {showReplyBox && (
-        <div className="ml-12 mt-2">
-          <CommentBox onSubmit={handleReply} placeholder="Write a reply..." />
-        </div>
-      )}
+      <div className="ml-[40%]">
+        <button
+          className="text-blue-400 text-2xl"
+          onClick={() => setShowReply(prev => !prev)}
+        >
+          {showReply ? "▼" : "▲"}
+          {comment.repliesCount > 0 && (
+            <span className="text-xl">
+              {comment.repliesCount} {comment.repliesCount === 1 ? "Reply" : "Replies"}
+            </span>
+          )}
+        </button>
+      </div>
 
-      <button onClick={setShowReply(prev => !prev)}>Show Reply</button>
-      
       {showReply && 
-         <CommentReplyBox 
+         <CommentReplyContainer 
            commentId = {comment._id}
-           getCommentReply = {commentService.getCommentReply}
          />
       }
     </div>

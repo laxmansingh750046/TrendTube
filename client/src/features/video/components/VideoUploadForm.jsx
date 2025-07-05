@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import videoService from "../services/videoService";
-import InputField from "../../../shared/components/InputField.jsx"; 
+import SmartInputField from "../../../shared/components/SmartInputField.jsx";
+import LoadOverlay from "../../../shared/components/LoadOverLay.jsx";
 
 function VideoUploadForm({ onSuccess }) {
-  const [videoFile, setVideoFile] = useState(null);
-  const [thumbnail, setThumbnail] = useState(null);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const videoRef = useRef();
+  const thumbRef = useRef();
+  const titleRef = useRef();
+  const descRef = useRef();
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
+      const videoFile = videoRef.current.files?.[0];
+      const thumbnail = thumbRef.current.files?.[0];
+      const title = titleRef.current.value;
+      const description = descRef.current.value;
+
       const formData = new FormData();
       formData.append("videoFile", videoFile);
       formData.append("thumbnail", thumbnail);
@@ -19,43 +27,58 @@ function VideoUploadForm({ onSuccess }) {
       await videoService.publishAVideo(formData);
       onSuccess?.();
     } catch (error) {
-      console.error("Error uploading video:", error);
+      console.error("Error loading video:", error);
       alert("Failed to upload video. Please try again.");
+    } finally{
+      setLoading(false);
     }
   };
 
   return (
+    
+  <LoadOverlay loading={loading}>
     <div className="space-y-4 max-w-xl mx-auto p-4">
-      <InputField
+      <SmartInputField
+        ref={videoRef}
         label="Video File"
         type="file"
         accept="video/*"
-        onChange={(e) => setVideoFile(e.target.files[0])}
+        validate={(file) => (file ? [] : ["Please upload a video file."])}
+        successCheck={(file) => !!file}
       />
 
-      <InputField
+      <SmartInputField
+        ref={thumbRef}
         label="Thumbnail Image"
         type="file"
         accept="image/*"
-        onChange={(e) => setThumbnail(e.target.files[0])}
+        validate={(file) => (file ? [] : ["Please upload a thumbnail image."])}
+        successCheck={(file) => !!file}
       />
 
-      <InputField
+      <SmartInputField
+        ref={titleRef}
         label="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
         placeholder="Enter video title"
+        validate={(val) =>
+          val.length === 0
+            ? ["Title is required"]
+            : val.length > 100
+            ? ["Title must be under 100 characters"]
+            : []
+        }
+        successCheck={(val) => val.length > 0 && val.length <= 100}
       />
 
-      <div>
-        <label className="inline-block mb-1 pl-1 font-medium">Description</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter video description"
-          className="px-3 py-2 rounded-lg bg-white text-black outline-none focus:bg-gray-50 duration-200 border border-gray-300 w-full"
-        />
-      </div>
+      <SmartInputField
+        ref={descRef}
+        label="Description"
+        placeholder="Enter video description"
+        validate={(val) =>
+          val.length === 0 ? ["Description is required"] : []
+        }
+        successCheck={(val) => val.length > 0}
+      />
 
       <button
         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
@@ -64,6 +87,7 @@ function VideoUploadForm({ onSuccess }) {
         Upload
       </button>
     </div>
+  </LoadOverlay>
   );
 }
 

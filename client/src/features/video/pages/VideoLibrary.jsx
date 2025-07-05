@@ -6,11 +6,10 @@ function VideoLibrary() {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    videoService.getAllVideos().then(res => setVideos(res.data.videos));
+    videoService.getAllVideos().then(res => setVideos(res.data.data.videos));
   }, []);
- 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 py-2">
       {videos?.map(video => <VideoCard key={video._id} video={video} />)}
     </div>
   );

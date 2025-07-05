@@ -7,7 +7,7 @@ function UploadVideo() {
 
   const handleSuccess = () => {
     setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 1500);
+    setTimeout(() => setShowSuccess(false), 2000);
   };
 
   return (

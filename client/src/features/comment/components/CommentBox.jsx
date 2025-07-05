@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import Button from "../../../shared/components/Button.jsx";
 
-const CommentBox = ({ onSubmit, placeholder = "Add a comment...", autoFocus = false }) => {
+const CommentBox = ({ onSubmit, actionType="comment", autoFocus = false }) => {
   const [text, setText] = useState("");
 
-  const handleSubmit = (e) => {
+  const handelSubmit = (e) => {
     e.preventDefault();
     if (!text.trim()) return;
     onSubmit(text);
@@ -12,18 +12,18 @@ const CommentBox = ({ onSubmit, placeholder = "Add a comment...", autoFocus = fa
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+    <form onSubmit={handelSubmit} className="flex flex-col gap-2">
       <textarea
-        className="w-full p-2 border border-gray-300 rounded resize-none focus:outline-none focus:ring"
+        className="w-full text-white text-xl bg-slate-900 p-2 border border-slate-600 rounded resize-none focus:outline-none focus:ring"
         rows="3"
-        placeholder={placeholder}
+        placeholder={actionType === "comment" ? "Add a comment..." : "Write a reply..."}
         value={text}
         autoFocus={autoFocus}
         onChange={(e) => setText(e.target.value)}
       />
       <div className="flex justify-end">
         <Button type="submit" className="text-sm px-4 py-1">
-          Comment
+          {actionType === "comment" ? "Comment" : "Reply"}
         </Button>
       </div>
     </form>

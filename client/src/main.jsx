@@ -6,12 +6,13 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store/index.js';
 
-
+import Home from './features/home/Home.jsx';
 import Login from './features/auth/pages/Login';
 import Register from './features/auth/pages/Register';
 import TweetFeed from './features/tweet/pages/TweetFeed';
 import TweetDetails from './features/tweet/pages/TweetDetails';
-import VideoLibrary from './features/video/pages/VideoLibrary';
+import Watch from './features/video/pages/watch/Watch.jsx';
+import VideoPlayer from './features/video/components/VideoPlayer.jsx';
 import UploadVideo from './features/video/pages/uploadVideo/UploadVideo.jsx'
 import VideoDetail from './features/video/pages/VideoDetail';
 import ChannelPage from './features/user/pages/ChannelPage';
@@ -24,10 +25,12 @@ const router = createBrowserRouter([
     path: '/',
     element: <App />,
     children: [
-      { path: '/', element: <AuthLayout authentication={false}> <VideoLibrary /> </AuthLayout> },
+      { path: '/', element: <AuthLayout authentication={false}> <Home /> </AuthLayout> },
       { path: '/login',  element:<AuthLayout authentication={false}> <Login /> </AuthLayout>},
       { path: '/register', element:<AuthLayout authentication={false}> <Register /> </AuthLayout>},
+      { path: '/watch', element: <Watch />},
       { path: '/upload', element: <AuthLayout authentication={true}> <UploadVideo /> </AuthLayout> },
+      { path: '/playvideo', element: <AuthLayout authentication={true}> <VideoPlayer /> </AuthLayout> },
       { path: 'feed', element: <AuthLayout authentication={true}> <TweetFeed /> </AuthLayout> },
       { path: 'tweet/:id', element: <AuthLayout authentication={true}> <TweetDetails /> </AuthLayout> },
       { path: 'video/:videoId', element: <AuthLayout authentication={true}> <VideoDetail /> </AuthLayout> },
@@ -39,9 +42,9 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <Provider store={store}>
       <RouterProvider router={router} />
     </Provider>
-  </StrictMode>
+  // </StrictMode>
 );
