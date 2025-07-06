@@ -9,7 +9,17 @@ const onLikeComment = async (commentId)=>{
     }
 }
 
+const onLikeVideo = async (videoId)=>{
+    try {
+        const res = await API.post(`/likes/toggle/v/${videoId}`);
+        return res?.data;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
+}
+
 const likeServices = {
     onLikeComment,
+    onLikeVideo
 }
 export default likeServices;

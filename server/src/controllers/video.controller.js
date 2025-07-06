@@ -1,6 +1,6 @@
 import mongoose, {isValidObjectId, mongo} from "mongoose"
 import {Video} from "../models/video.model.js"
-import {User} from "../models/user.model.js"
+import {Like} from "../models/like.model.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
@@ -103,21 +103,38 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
+  const userId = req.user?._id; // Assuming you're using auth middleware
 
   if (!mongoose.Types.ObjectId.isValid(videoId)) {
     throw new ApiError(400, "Invalid video ID");
   }
 
-  const video = await Video.findById(videoId).populate("owner", "username email");
-
+  // Fetch the video with owner details
+  const video = await Video.findById(videoId).populate("owner", "username email avatar");
   if (!video) {
     throw new ApiError(404, "Video not found");
   }
 
+  // Count total likes for this video
+  const likesCount = await Like.countDocuments({ video: videoId });
+
+  // Check if current user has liked this video
+  let isLiked = false;
+  if (userId) {
+    isLiked = await Like.exists({ video: videoId, owner: userId });
+  }
+
+  const videoData = {
+    ...video.toObject(),
+    likesCount,
+    isLiked: Boolean(isLiked),
+  };
+
   return res
     .status(200)
-    .json(new ApiResponse(200, video, "Video fetched successfully"));
+    .json(new ApiResponse(200, videoData, "Video fetched successfully"));
 });
+
 
 const updateVideo = asyncHandler(async (req, res) => {
     //TODO: update video details like title, description, thumbnail
@@ -219,6 +236,23 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
   );
 });
 
+const increaseView = asyncHandler(async (req, res) => {
+  const {videoId} = req.params;
+  if (!mongoose.Types.ObjectId.isValid(videoId)) {
+    throw new ApiError(400, "Invalid video ID");
+  }
+
+  // Fetch the video with owner details
+  const video = await Video.findById(videoId);
+  if (!video) {
+    throw new ApiError(404, "Video not found");
+  }
+  video.views += 1; // Increment views
+  await video.save();
+  return res.status(200).json(
+    new ApiResponse(200, { views: video.views }, "View count increased successfully")
+  );
+});
 
 export {
     getAllVideos,
@@ -226,5 +260,6 @@ export {
     getVideoById,
     updateVideo,
     deleteVideo,
-    togglePublishStatus
+    togglePublishStatus,
+    increaseView
 }

@@ -9,6 +9,8 @@ const updateVideo = (id, formData) =>
   API.patch(`/videos/${id}`, formData);
 const togglePublishStatus = (id) =>
   API.patch(`/videos/toggle/publish/${id}`);
+const incrementView = (id) => 
+  API.patch(`videos/vw/${id}`);
 
 const videoService = {
   getAllVideos,
@@ -16,7 +18,8 @@ const videoService = {
   publishAVideo,
   deleteVideo,
   updateVideo,
-  togglePublishStatus
+  togglePublishStatus,
+  incrementView
 };
 
 export default videoService;

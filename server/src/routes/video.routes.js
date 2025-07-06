@@ -6,16 +6,18 @@ import {
     publishAVideo,
     togglePublishStatus,
     updateVideo,
+    increaseView
 } from "../controllers/video.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { AddUser } from '../middlewares/optionalAuth.js';
 import { upload } from "../middlewares/multer.middleware.js";
 
 const router = Router();
 
 // Public Routes
 router.route("/").get(getAllVideos);
-router.route("/:videoId").get(getVideoById);
-
+router.route("/:videoId").get(AddUser, getVideoById);
+router.route("/vw/:videoId").patch(increaseView);
 // Protected Routes
 router
     .route("/")

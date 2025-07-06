@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CommentBox from "./CommentBox.jsx";
-import { formatTime } from "../../../shared/utils/formatTime.js";
+import formatTime from "../../../shared/utils/formatTime.js";
 import commentService from "../api/index.js";
 import LikeButton from "../../../shared/components/LikeButton.jsx";
 
