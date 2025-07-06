@@ -4,12 +4,16 @@ import CommentReplyContainer from "./CommentReplyContainer";
 
 const CommentThread = ({comment}) => {
   const [showReply, setShowReply] = useState(false);
-
+  const [repliesCount,setRepliesCount] = useState(comment.repliesCount);
+  const incrRepliesCount = ()=>{
+    setRepliesCount(prev => prev+1);
+  }
   return (
     <div className="mb-4 border-b border-gray-500 pb-4">
       <CommentItem
         comment={comment}
         onSuccess={()=>{}}
+        onAddingNewReply = {incrRepliesCount}
       />
 
       <div className="ml-[40%]">
@@ -18,9 +22,9 @@ const CommentThread = ({comment}) => {
           onClick={() => setShowReply(prev => !prev)}
         >
           {showReply ? "▼" : "▲"}
-          {comment.repliesCount > 0 && (
+          {repliesCount > 0 && (
             <span className="text-xl">
-              {comment.repliesCount} {comment.repliesCount === 1 ? "Reply" : "Replies"}
+              {repliesCount} {repliesCount === 1 ? "Reply" : "Replies"}
             </span>
           )}
         </button>
@@ -29,6 +33,8 @@ const CommentThread = ({comment}) => {
       {showReply && 
          <CommentReplyContainer 
            commentId = {comment._id}
+           onAddingNewReply = {incrRepliesCount}
+           repliesCount = {repliesCount}
          />
       }
     </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import CommentItem from './CommentItem';
 import commentService from '../api/index.js';
 
-function CommentReplyContainer({ commentId }) {
+function CommentReplyContainer({ commentId, onAddingNewReply, repliesCount }) {
   const [replies, setReplies] = useState([]);
 
   // define fetchReplies using useCallback so it stays the same across renders
@@ -17,7 +17,7 @@ function CommentReplyContainer({ commentId }) {
 
   useEffect(() => {
     fetchReplies();
-  }, [fetchReplies]);
+  }, [fetchReplies,repliesCount]);
 
   return (
     <div>
@@ -28,6 +28,7 @@ function CommentReplyContainer({ commentId }) {
               key={reply._id}
               comment={reply}
               onSuccess={fetchReplies} // now works as intended
+              onAddingNewReply = {onAddingNewReply}
             />
           ))}
         </div>

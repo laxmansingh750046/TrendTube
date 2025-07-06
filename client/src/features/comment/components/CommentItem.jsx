@@ -4,7 +4,7 @@ import { formatTime } from "../../../shared/utils/formatTime.js";
 import commentService from "../api/index.js";
 import LikeButton from "../../../shared/components/LikeButton.jsx";
 
-const CommentItem = ({ comment, onSuccess }) => {
+const CommentItem = ({ comment, onSuccess, onAddingNewReply }) => {
   const [showReplyBox, setShowReplyBox] = useState(false);
   const toggleReplyBox = () => {
     setShowReplyBox(prev => !prev);
@@ -13,6 +13,8 @@ const CommentItem = ({ comment, onSuccess }) => {
   const handleReply = async (replyText) => {
     await commentService.onReplySubmit(comment._id, replyText);
     setShowReplyBox(false);
+    console.log("incr hogaye ji");
+    onAddingNewReply();
     onSuccess();
   };
 
