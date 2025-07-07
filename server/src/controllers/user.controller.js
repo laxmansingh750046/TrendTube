@@ -389,96 +389,88 @@ const changeCurrentPassword = asyncHandler(async(req,res)=>{
     .json(new ApiResponse(200,{},"password changed successfully"));
 });
 
-const getUserChannelProfile = asyncHandler(async(req,res)=>{
-    const {username} = req.params;
+const getUserChannelProfile = asyncHandler(async (req, res) => {
+    const { username } = req.params;
+    const loggedInUserId = req.user?._id; // Extract user ID if available
 
-    if(!username?.trim()){
-        throw ApiError(400, "missing username");
-    }
-    
-    if (!username || typeof username !== "string") {
-        throw new ApiError(400, "Invalid username");
+    // Validate username
+    if (!username?.trim()) {
+        throw new ApiError(400, "Username is required");
     }
 
-    const user = await User.findOne({ username: username.toLowerCase() });
-
-    if (!user) {
-        throw new ApiError(404, "User not found with given username");
+    // Check if user exists
+    const userExists = await User.exists({ username: username.toLowerCase() });
+    if (!userExists) {
+        throw new ApiError(404, "User not found");
     }
-    
+
     const channel = await User.aggregate([
         {
             $match: {
-                username: username?.toLowerCase()
-            }
-        },
-        {
-            $lookup: {
-                from : "subscriptions",
-                localField: "_id",
-                foreignField: "channel",
-                as : "subscribers"
+                username: username.toLowerCase()
             }
         },
         {
             $lookup: {
                 from: "subscriptions",
                 localField: "_id",
-                foreignField: "subsciber",
+                foreignField: "channel",
+                as: "subscribers"
+            }
+        },
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "subscriber", // Fixed typo: was "subsciber"
                 as: "subscribedTo"
             }
         },
         {
             $addFields: {
-                subscribersCount: {
-                    $size: "$subscribers"
-                },
-                channelSubscribedToCount: {
-                    $size: "$subscribedTo"
-                },
-                isSubscribed: isUserLoggedIn
-                    ? {
-                        $cond: {
+                subscribersCount: { $size: "$subscribers" },
+                channelsSubscribedToCount: { $size: "$subscribedTo" },
+                isSubscribed: {
+                    $cond: {
                         if: {
-                            $in: [
-                            req.user._id,
-                            {
-                                $map: {
-                                input: "$subscribers",
-                                as: "s",
-                                in: "$$s.subscriber"
+                            $and: [
+                                { $ifNull: [loggedInUserId, false] },
+                                { 
+                                    $in: [
+                                        loggedInUserId,
+                                        "$subscribers.subscriber"
+                                    ]
                                 }
-                            }
                             ]
                         },
                         then: true,
                         else: false
-                        }
                     }
-                    : false
+                }
             }
         },
         {
             $project: {
-                fullname: 1,
+                fullName: 1,
                 username: 1,
-                subscribersCount: 1,
-                channelSubscribedToCount: 1,
-                isSubscribed: 1,
+                email: 1,
                 avatar: 1,
                 coverImage: 1,
-                email: 1
+                subscribersCount: 1,
+                channelsSubscribedToCount: 1,
+                isSubscribed: 1,
+                createdAt: 1
             }
         }
-    ])
+    ]);
 
-    if(!channel?.length){
-        throw new ApiError(400, "channel does not exist");
+    if (!channel?.length) {
+        throw new ApiError(404, "Channel not found");
     }
 
     return res
-    .status(200)
-    .json( new ApiResponse(200, channel[0], "user channel fetched succesfully"));
+        .status(200)
+        .json(new ApiResponse(200, channel[0], "Channel fetched successfully"));
 });
 
 const getWatchHistory = asyncHandler(async(req,res)=>{

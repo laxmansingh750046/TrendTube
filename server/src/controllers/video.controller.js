@@ -8,10 +8,10 @@ import {uploadOnCloudinary, deleteFromCloudinary} from "../utils/cloudinary.js"
 import {getVideoDuration} from "../utils/getVideoDuration.js"
 
 const getAllVideos = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10, query, sortBy = "createdAt", sortType = -1, userId } = req.query;
-    const matchConditions = {
-        isPublished: true
-    };
+  const { page = 1, limit = 10, query, sortBy = "createdAt", sortType = -1, userId } = req.query;
+  const matchConditions = {
+    isPublished: true
+  };
 
     if (userId && mongoose.Types.ObjectId.isValid(userId)) {
         matchConditions.owner = new mongoose.Types.ObjectId(userId);
@@ -83,7 +83,6 @@ const getAllVideos = asyncHandler(async (req, res) => {
         }
     ]);
 
-    
     res.status(200).json(new ApiResponse(200, {
         videos: videos || [],
     }));

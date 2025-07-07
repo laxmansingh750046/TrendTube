@@ -8,7 +8,7 @@ function ChannelPage() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    userService.getChannelByUsername(username).then(res => setUser(res.data.profile));
+    userService.getChannelByUsername(username).then(res => {setUser(res.data);console.log(res.data)});
   }, [username]);
 
   if (!user) return <div>Loading...</div>;

@@ -1,7 +1,7 @@
 import LoginForm from "../components/LoginForm.jsx";
 
 const Login = () => (
-  <div className="min-h-screen flex items-center justify-center">
+  <div className="ml-[30vw] min-h-screen flex items-center justify-center">
     <LoginForm />
   </div>
 );

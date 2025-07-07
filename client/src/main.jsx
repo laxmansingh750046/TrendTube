@@ -34,7 +34,7 @@ const router = createBrowserRouter([
       { path: 'feed', element: <AuthLayout authentication={true}> <TweetFeed /> </AuthLayout> },
       { path: 'tweet/:id', element: <AuthLayout authentication={true}> <TweetDetails /> </AuthLayout> },
       { path: 'video/:videoId', element: <AuthLayout authentication={true}> <VideoDetail /> </AuthLayout> },
-      { path: 'u/:username', element: <AuthLayout authentication={true}> <ChannelPage /> </AuthLayout> },
+      { path: 'u/:username', element:  <ChannelPage /> },
       { path: 'channel/edit', element: <AuthLayout authentication={true}> <EditProfile /> </AuthLayout> },
       { path: 'history', element: <AuthLayout authentication={true}> <WatchHistoryPage /> </AuthLayout> },
     ]

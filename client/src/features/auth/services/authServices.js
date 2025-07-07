@@ -1,5 +1,14 @@
 import API from "../../../services/axios";
 
+const logout = async (formData) => {
+  try {
+    const res = await API.post("/users/logout", formData);
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
 const registerUser = async (formData) => {
   try {
     const res = await API.post("/users/register", formData);
@@ -31,6 +40,7 @@ const authServices = {
   registerUser,
   loginUser,
   getCurrentUser,
+  logout
 };
 
 export default authServices;

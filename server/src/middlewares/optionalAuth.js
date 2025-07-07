@@ -5,18 +5,17 @@ import { User } from "../models/user.model.js";
 
 export const AddUser = asyncHandler(async(req, res,next)=>{
    try {
-        const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ","");
+       const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ","");
        
-        if(!token) return res.status(200).json(null);
-    
-        const decodedToken = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
-     
+    if(token)
+    {    const decodedToken = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
+        
         const user = await User.findById(decodedToken?._id).select("-password -refreshToken");
-    
-        if(user){
-            req.user = user;
-        }else req.user = null; // If user not found, set to null
-    
+        
+            if(user){
+                req.user = user;
+            }else req.user = null;
+    }
         next();
     } catch (error) {
         throw new ApiError(401,error?.message || "Invalid Access Token");
