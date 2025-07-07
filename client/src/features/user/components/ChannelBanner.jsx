@@ -6,7 +6,7 @@ function ChannelBanner({ avatar, coverImage, username, fullname }) {
         <img src={avatar} className="w-16 h-16 rounded-full border-2 border-white" />
         <div>
           <h2 className="font-bold text-xl">{fullname}</h2>
-          <p className="text-gray-600">@{username}</p>
+          <p className="text-gray-200">@{username}</p>
         </div>
       </div>
     </div>
