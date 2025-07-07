@@ -24,21 +24,44 @@ const getAllVideos = asyncHandler(async (req, res) => {
         ];
     }
 
+    const currentUserId = req.user?._id; // Get current user ID if authenticated
+
     const videos = await Video.aggregate([
         { $match: matchConditions },
         { $sort: { [sortBy]: parseInt(sortType) || -1 } },
         { $skip: (parseInt(page) - 1) * parseInt(limit) },
         { $limit: parseInt(limit) },
         {
-          $lookup: {
-            from: "users",
-            localField: "owner",
-            foreignField: "_id",
-            as: "owner"   
-          }
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner"
+            }
+        },
+        { $unwind: "$owner" },
+        {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "video",
+                as: "likes"
+            }
         },
         {
-          $unwind: "$owner"
+            $addFields: {
+                likesCount: { $size: "$likes" },
+                isLiked: {
+                    $cond: {
+                        if: { $in: [currentUserId ? new mongoose.Types.ObjectId(currentUserId) : null, "$likes.owner"] },
+                        then: true,
+                        else: false
+                    }
+                },
+                userId: "$owner._id",
+                username: "$owner.username",
+                avatar: "$owner.avatar"
+            }
         },
         {
             $project: {
@@ -51,18 +74,88 @@ const getAllVideos = asyncHandler(async (req, res) => {
                 views: 1,
                 createdAt: 1,
                 updatedAt: 1,
-                username: "$owner.username",
-                avatar: "$owner.avatar",
+                userId: 1,
+                username: 1,
+                avatar: 1,
+                likesCount: 1,
+                isLiked: 1
             }
         }
     ]);
-    const totalCount = await Video.countDocuments(matchConditions);
-    res.status(200).json(new ApiResponse(200,{
+
+    
+    res.status(200).json(new ApiResponse(200, {
         videos: videos || [],
-        page: parseInt(page),
-        limit: parseInt(limit),
-        total: totalCount
     }));
+});
+
+const getVideoById = asyncHandler(async (req, res) => {
+    const { videoId } = req.params;
+    const currentUserId = req.user?._id;
+
+    if (!mongoose.Types.ObjectId.isValid(videoId)) {
+        throw new ApiError(400, "Invalid video ID");
+    }
+
+    const video = await Video.aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(videoId), isPublished: true } },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner"
+            }
+        },
+        { $unwind: "$owner" },
+        {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "video",
+                as: "likes"
+            }
+        },
+        {
+            $addFields: {
+                likesCount: { $size: "$likes" },
+                isLiked: {
+                    $cond: {
+                        if: { $in: [currentUserId ? new mongoose.Types.ObjectId(currentUserId) : null, "$likes.owner"] },
+                        then: true,
+                        else: false
+                    }
+                },
+                userId: "$owner._id",
+                username: "$owner.username",
+                avatar: "$owner.avatar"
+            }
+        },
+        {
+            $project: {
+                _id: 1,
+                videoFile: 1,
+                thumbnail: 1,
+                title: 1,
+                description: 1,
+                duration: 1,
+                views: 1,
+                createdAt: 1,
+                updatedAt: 1,
+                userId: 1,
+                username: 1,
+                avatar: 1,
+                likesCount: 1,
+                isLiked: 1
+            }
+        }
+    ]);
+
+    if (!video.length) {
+        throw new ApiError(404, "Video not found");
+    }
+
+    res.status(200).json(new ApiResponse(200, {video:video.length ? video[0] : null}, "Video fetched successfully"));
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {
@@ -100,41 +193,6 @@ const publishAVideo = asyncHandler(async (req, res) => {
      )
 
 })
-
-const getVideoById = asyncHandler(async (req, res) => {
-  const { videoId } = req.params;
-  const userId = req.user?._id; // Assuming you're using auth middleware
-
-  if (!mongoose.Types.ObjectId.isValid(videoId)) {
-    throw new ApiError(400, "Invalid video ID");
-  }
-
-  // Fetch the video with owner details
-  const video = await Video.findById(videoId).populate("owner", "username email avatar");
-  if (!video) {
-    throw new ApiError(404, "Video not found");
-  }
-
-  // Count total likes for this video
-  const likesCount = await Like.countDocuments({ video: videoId });
-
-  // Check if current user has liked this video
-  let isLiked = false;
-  if (userId) {
-    isLiked = await Like.exists({ video: videoId, owner: userId });
-  }
-
-  const videoData = {
-    ...video.toObject(),
-    likesCount,
-    isLiked: Boolean(isLiked),
-  };
-
-  return res
-    .status(200)
-    .json(new ApiResponse(200, videoData, "Video fetched successfully"));
-});
-
 
 const updateVideo = asyncHandler(async (req, res) => {
     //TODO: update video details like title, description, thumbnail

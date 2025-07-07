@@ -1,5 +1,4 @@
-import React from 'react'
-import CommentsSection from '../../../comment/pages/CommentsSection';
+import CommentsSection from '../../comment/pages/CommentsSection.jsx';
 
 function Comments({videoId}) {
   return (

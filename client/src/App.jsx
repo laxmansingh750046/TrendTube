@@ -4,6 +4,7 @@ import authServices from './features/auth/services/authServices.js';
 import Header from './shared/layout/Header.jsx';
 import Footer from './shared/layout/Footer.jsx';
 import { useDispatch } from 'react-redux';
+import NavigationMenu from './shared/layout/NavigationMenu.jsx'
 import { setUser, logout } from './features/auth/authSlice';
 
 function App() {
@@ -28,7 +29,10 @@ function App() {
       <Header />
       
       <main className="flex-1 bg-slate-900 w-[100%] py-1">
-        <Outlet />
+        <div className='h-[100%] w-[100%] flex'>
+          <NavigationMenu />
+          <Outlet />
+         </div> 
       </main>
 
       <Footer />

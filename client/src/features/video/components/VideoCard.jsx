@@ -1,19 +1,24 @@
 import extractPublicId from '../../../shared/utils/extractPublicId.js'
 import formatTime from "../../../shared/utils/formatTime";
 import { Link } from 'react-router-dom';
+import formatDuration from '../../../shared/utils/formatDuration.js'
 
 function VideoCard({ video }) {
   const publicId = extractPublicId(video.videoFile);
+  const duration=formatDuration(video.duration);
   return (
     <Link to={`/watch?pi=${publicId}&vi=${video._id}`}>
-    <div className="h-[50vh] bg-slate-900 px-1 rounded shadow hover:shadow-md">
+    <div className="h-[50vh] bg-slate-900 px-1rounded shadow hover:shadow-md">
       {/* Thumbnail */}
-      <div className="h-[65%]">
+      <div className="relative h-[65%]">
         <img
           src={video.thumbnail}
           className="w-full h-full object-cover rounded-xl"
           alt={video.title}
           />
+          <div className='flex items-center justify-center absolute bg-slate-700 rounded-[7px] px-2 right-4 bottom-3'>
+            <span className='text-gray-300 text-2xl'>{duration}</span>
+          </div>
       </div>
 
       {/* Details Section (35% of card) */}

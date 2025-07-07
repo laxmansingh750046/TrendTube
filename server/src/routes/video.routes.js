@@ -15,7 +15,7 @@ import { upload } from "../middlewares/multer.middleware.js";
 const router = Router();
 
 // Public Routes
-router.route("/").get(getAllVideos);
+router.route("/").get(AddUser, getAllVideos);
 router.route("/:videoId").get(AddUser, getVideoById);
 router.route("/vw/:videoId").patch(increaseView);
 // Protected Routes

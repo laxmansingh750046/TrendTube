@@ -20,8 +20,9 @@ const getVideoComments = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Video not found with given ID");
     }
 
-    const currentUserId = req.user?._id;
+    const currentUserId = req.user?._id; // Will be undefined if not logged in
     const videoOwnerId = video.owner;
+
     const comments = await Comment.aggregate([
         {
             $match: {
@@ -30,7 +31,8 @@ const getVideoComments = asyncHandler(async (req, res) => {
         },
         {
             $addFields: {
-                priorityOrder: {
+                // Only add priority if currentUserId exists (user is logged in)
+                priorityOrder: currentUserId ? {
                     $switch: {
                         branches: [
                             {
@@ -44,13 +46,13 @@ const getVideoComments = asyncHandler(async (req, res) => {
                         ],
                         default: 0
                     }
-                }
+                } : 0 // Default to 0 if not logged in
             }
         },
         {
             $sort: {
-                priorityOrder: -1, // Highest priority first
-                createdAt: -1
+                createdAt: -1, // Newest comments first
+                priorityOrder: -1 // Then sort by priority if same timestamp
             }
         },
         {
@@ -81,15 +83,15 @@ const getVideoComments = asyncHandler(async (req, res) => {
         {
             $addFields: {
                 likesCount: { $size: "$commentLikes" },
-                isLiked: {
-                $in: [new mongoose.Types.ObjectId(currentUserId), {
-                    $map: {
-                    input: "$commentLikes",
-                    as: "like",
-                    in: "$$like.owner"
-                    }
-                }]
-                }
+                isLiked: currentUserId ? {
+                    $in: [new mongoose.Types.ObjectId(currentUserId), {
+                        $map: {
+                            input: "$commentLikes",
+                            as: "like",
+                            in: "$$like.owner"
+                        }
+                    }]
+                } : false // Default to false if not logged in
             }
         },
         {
@@ -107,7 +109,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
     ]);
 
     return res.status(200).json(
-        new ApiResponse(200,  {comments} , "Video comments fetched successfully")
+        new ApiResponse(200, { comments }, "Video comments fetched successfully")
     );
 });
 
