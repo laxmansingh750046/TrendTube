@@ -47,7 +47,7 @@ router.route("/change-email").post(verifyJWT,updateEmail);
 router.route("/change-avatar").patch(verifyJWT, upload.single("avatar"),updateUserAvatar);
 router.route("/change-coverimage").patch(verifyJWT, upload.single("coverImage"),updateUserCoverImage);
 router.route("/u/:username").get(AddUser,getUserChannelProfile);
-router.route("/user-videos").get(AddUser, getChannelVideos);
+router.route("/videos/:username").get(AddUser, getChannelVideos);
 router.route("/history").get(verifyJWT,getWatchHistory);
 
 export default router;

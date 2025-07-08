@@ -31,7 +31,9 @@ function App() {
       <main className="flex-1 bg-slate-900 w-[100%] py-1">
         <div className='h-[100%] w-[100%] flex'>
           <NavigationMenu />
-          <Outlet />
+          <div className='h-full w-full'>
+            <Outlet />
+          </div>
          </div> 
       </main>
 

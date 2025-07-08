@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter, Navigate} from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store/index.js';
 
@@ -34,12 +34,16 @@ const router = createBrowserRouter([
       { path: 'feed', element: <AuthLayout authentication={true}> <TweetFeed /> </AuthLayout> },
       { path: 'tweet/:id', element: <AuthLayout authentication={true}> <TweetDetails /> </AuthLayout> },
       { path: 'video/:videoId', element: <AuthLayout authentication={true}> <VideoDetail /> </AuthLayout> },
-      { path: 'u/:username', element:  <ChannelPage /> },
+
+      { path: 'u/:username', element: <Navigate to="videos" replace /> },
+      { path: 'u/:username/:tab?', element:  <ChannelPage /> },
+
       { path: 'channel/edit', element: <AuthLayout authentication={true}> <EditProfile /> </AuthLayout> },
       { path: 'history', element: <AuthLayout authentication={true}> <WatchHistoryPage /> </AuthLayout> },
     ]
   },
 ]);
+
 
 createRoot(document.getElementById('root')).render(
   // <StrictMode>

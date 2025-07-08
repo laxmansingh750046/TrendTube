@@ -5,10 +5,11 @@ import videoService from '../../services/videoService.js';
 import VideoLikeButton from '../../../../shared/components/VideoLikeButton.jsx'
 import DescriptionBox from '../../../../shared/components/DescriptionBox.jsx';
 import CommentAndUpnext from './CommentAndUpnext.jsx';
+import { Link } from 'react-router-dom';
 
 function Watch() {
-  const [video, setVideo] = useState(null);
-  const [searchParams] = useSearchParams();
+const [video, setVideo] = useState(null);
+const [searchParams] = useSearchParams();
   
 
 // Inside your Watch component
@@ -84,7 +85,7 @@ const viewTimerRef = useRef(null);
                       className="w-10 h-10 rounded-full object-cover"
                   />
                   <div>
-                    <div className='text-xl'>{video.username}</div>
+                    <Link to={`/u/${video.username}`}><div className='text-xl'>{video.username}</div></Link>
                     <div className="text-base text-gray-300">subscribers</div>
                   </div>
 

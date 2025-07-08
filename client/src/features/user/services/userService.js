@@ -11,9 +11,10 @@ const updateFullname = (data) => API.post("/users/change-fullname", data);
 const updateEmail = (data) => API.post("/users/change-email", data);
 const changePassword = (data) => API.post("/users/change-password", data);
 const getChannelByUsername = (username) => API.get(`/users/u/${username}`);
+const getChannelVideos = (username,page=1,limit=10) => API.get(`/users/videos/${username}?page=${page}&limit=${limit}`);
 const getWatchHistory = () => API.get("/users/history");
 
-export default {
+const userService= {
   register,
   login,
   logout,
@@ -25,5 +26,8 @@ export default {
   updateEmail,
   changePassword,
   getChannelByUsername,
-  getWatchHistory
+  getWatchHistory,
+  getChannelVideos
 };
+
+export default userService;
