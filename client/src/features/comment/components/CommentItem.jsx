@@ -13,7 +13,6 @@ const CommentItem = ({ comment, onSuccess, onAddingNewReply }) => {
   const handleReply = async (replyText) => {
     await commentService.onReplySubmit(comment._id, replyText);
     setShowReplyBox(false);
-    console.log("incr hogaye ji");
     onAddingNewReply();
     onSuccess();
   };
