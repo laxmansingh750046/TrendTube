@@ -62,7 +62,7 @@ const viewTimerRef = useRef(null);
   const videoId = searchParams.get("vi");
 
   return (
-    <div className="w-full h-full flex">
+    <div className="w-full h-full mt-20 flex">
      
      {video ? (
             <>

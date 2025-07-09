@@ -7,7 +7,7 @@ export default function CommentAndUpnext({videoId, comment=false}) {
 
   return (
     <>
-     <div className="flex items-center justify-center mb-3">
+     <div className="flex items-center justify-center my-3">
           <button
             onClick={()=> setSwap(p=>!p)}
             className="px-3 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-300"
