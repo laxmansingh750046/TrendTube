@@ -29,7 +29,7 @@ function Login() {
     
       if (session) {
         const userData = await authServices.getCurrentUser();
-        if (userData) dispatch(authLogin({ user: userData.user }));
+        if (userData) dispatch(authLogin({ user: userData.data.user }));
         navigate('/');
       }
     } catch (error) {
