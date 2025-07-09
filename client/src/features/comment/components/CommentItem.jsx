@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import CommentBox from "./CommentBox.jsx";
 import formatTime from "../../../shared/utils/formatTime.js";
 import commentService from "../api/index.js";
 import LikeButton from "../../../shared/components/LikeButton.jsx";
+import {useNavigate} from 'react-router-dom'
 
 const CommentItem = ({ comment, onSuccess, onAddingNewReply }) => {
   const [showReplyBox, setShowReplyBox] = useState(false);
+  const navigate = useNavigate();
   const toggleReplyBox = () => {
     setShowReplyBox(prev => !prev);
   };
@@ -30,7 +32,12 @@ const CommentItem = ({ comment, onSuccess, onAddingNewReply }) => {
         {/* Content */}
         <div className="flex-1 text-base">
           <div className="flex items-center gap-2 font-semibold text-white">
-            <span>@{comment.ownerInfo?.username}</span>
+            <button className="text-white hover:text-gray-400"
+            onClick={()=>navigate(`/u/${comment.ownerInfo?.username}/videos`)}>
+            <span>
+              @{comment.ownerInfo?.username}
+            </span>
+            </button>
             <span className="text-gray-400 font-normal">
               {formatTime(comment.createdAt)}
             </span>

@@ -11,13 +11,21 @@ import {
   LogOut,
   User,
   LogIn,
-  UserPlus
+  UserPlus,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
+import { useState } from 'react';
 
 function NavigationMenu() {
   const username = useSelector((state)=> state.auth.user?.username);
   const authStatus = useSelector((state) => state.auth.status);
   const navigate = useNavigate();
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  const toggleMinimize = () => {
+    setIsMinimized(!isMinimized);
+  };
 
   const authItems = [
     { name: 'Login', slug: '/login', icon: <LogIn size={20} />, active: !authStatus },
@@ -38,7 +46,15 @@ function NavigationMenu() {
   ];
 
   return (
-    <div className="fixed z-50 w-50 h-full bg-slate-800 text-white flex flex-col">
+    <div className={`fixed top-14 z-50 ${isMinimized ? 'w-16' : 'w-54'} h-[89vh] bg-slate-800 text-white flex flex-col transition-all duration-300`}>
+      {/* Minimize Button */}
+      <button 
+        onClick={toggleMinimize}
+        className="absolute -right-3 top-1/2 transform -translate-y-1/2 bg-slate-700 rounded-full p-1 hover:bg-slate-400 z-10"
+      >
+        {isMinimized ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+      </button>
+
       {/* Auth Navigation (shown when not logged in) */}
       {!authStatus && (
         <div className="space-y-1 p-2">
@@ -48,10 +64,11 @@ function NavigationMenu() {
                 <button
                   key={item.name}
                   onClick={() => navigate(item.slug)}
-                  className="flex items-center space-x-3 w-full px-3 py-2 hover:bg-slate-700 rounded"
+                  className={`flex items-center ${isMinimized ? 'justify-center' : 'space-x-3'} w-full px-3 py-2 hover:bg-slate-400 rounded`}
+                  title={isMinimized ? item.name : ''}
                 >
                   {item.icon}
-                  <span>{item.name}</span>
+                  {!isMinimized && <span>{item.name}</span>}
                 </button>
               )
           )}
@@ -67,10 +84,11 @@ function NavigationMenu() {
                 <button
                   key={item.name}
                   onClick={() => navigate(item.slug)}
-                  className="flex items-center space-x-3 w-full px-3 py-2 hover:bg-slate-700 rounded"
+                  className={`flex items-center ${isMinimized ? 'justify-center' : 'space-x-3'} w-full px-3 py-2 hover:bg-slate-400 rounded`}
+                  title={isMinimized ? item.name : ''}
                 >
                   {item.icon}
-                  <span>{item.name}</span>
+                  {!isMinimized && <span>{item.name}</span>}
                 </button>
               )
           )}
@@ -88,10 +106,11 @@ function NavigationMenu() {
                     <Link
                       key={item.name}
                       to={item.slug}
-                      className="flex items-center space-x-3 px-3 py-2 hover:bg-slate-700 rounded"
+                      className={`flex items-center ${isMinimized ? 'justify-center' : 'space-x-3'} px-3 py-2 hover:bg-slate-400 rounded`}
+                      title={isMinimized ? item.name : ''}
                     >
                       {item.icon}
-                      <span>{item.name}</span>
+                      {!isMinimized && <span>{item.name}</span>}
                     </Link>
                   )
               )}
@@ -102,10 +121,10 @@ function NavigationMenu() {
 
       {/* Logout at bottom (shown when logged in) */}
       {authStatus && (
-  <div className="p-2 border-t border-slate-700">
-    <LogoutConfirmation />
-  </div>
-)}
+        <div className="p-2 border-t border-slate-700">
+          <LogoutConfirmation isMinimized={isMinimized} />
+        </div>
+      )}
     </div>
   );
 }
