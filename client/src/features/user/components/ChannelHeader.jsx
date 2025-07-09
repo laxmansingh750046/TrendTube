@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
+import {useNavigate} from 'react-router-dom';
 import Button from '../../../shared/components/Button.jsx';
 import SubscribeButton from '../../../shared/components/SubscribeButton.jsx';
 
 export const ChannelHeader = ({ channel }) => {
     // Get auth status from Redux store
     const isLoggedIn = useSelector((state) => state.auth.status);
-    const userId = useSelector((state) => state.auth.user?._id);
-
-    const isOwner = channel?.owner?._id === userId;
+    const isOwner = channel?.isOwner;
+    const navigate = useNavigate();
 
     return (
         <div className="relative">
@@ -49,7 +49,9 @@ export const ChannelHeader = ({ channel }) => {
                         )}
                         
                         {isOwner && (
-                            <Button variant="outline" className="mt-2 md:mt-0">
+                            <Button variant="outline" className="mt-2 md:mt-0"
+                               onClick={()=>navigate('/channel/edit')}
+                            >
                                 Customize Channel
                             </Button>
                         )}

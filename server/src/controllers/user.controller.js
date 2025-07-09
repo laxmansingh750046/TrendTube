@@ -334,7 +334,7 @@ const updateUserDetail = async(req, res, type)=>{
         .json(new ApiResponse(200,user,"All details updated"));
     } catch (error) {
         console.log(`error while updating ${type} `,error);
-        throw new ApiError(500,"error updating details");
+        throw new ApiError(500,`error updating details: ${error}`);
     }
 }
 
@@ -536,6 +536,90 @@ const getChannelVideos = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User not found");
     }
 
+    const currentUserId = req.user?._id; // Get current user for isLiked check
+
+    const pipeline = [
+        { $match: { 
+            owner: user._id, 
+            isPublished: true 
+        }},
+        { $sort: { createdAt: -1 } },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                    { $project: { username: 1, avatar: 1 } }
+                ]
+            }
+        },
+        { $unwind: "$owner" },
+        // Add likes lookup
+        {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "video",
+                as: "likes"
+            }
+        },
+        // Add computed fields
+        {
+            $addFields: {
+                likesCount: { $size: "$likes" },
+                isLiked: {
+                    $cond: {
+                        if: { 
+                            $in: [
+                                currentUserId ? new mongoose.Types.ObjectId(currentUserId) : null, 
+                                "$likes.owner"
+                            ] 
+                        },
+                        then: true,
+                        else: false
+                    }
+                },
+                isOwner: {
+                    $cond: {
+                        if: {
+                            $eq: [
+                                "$owner._id",
+                                currentUserId ? new mongoose.Types.ObjectId(currentUserId) : null
+                            ]
+                        },
+                        then: true,
+                        else: false
+                    }
+                },
+                userId: "$owner._id",
+                username: "$owner.username",
+                avatar: "$owner.avatar"
+            }
+        },
+        // Project matching getAllVideos format
+        {
+            $project: {
+                _id: 1,
+                videoFile: 1,
+                thumbnail: 1,
+                title: 1,
+                description: 1,
+                duration: 1,
+                views: 1,
+                createdAt: 1,
+                updatedAt: 1, 
+                userId: 1,
+                username: 1,
+                avatar: 1,
+                likesCount: 1,
+                isLiked: 1,
+                isOwner: 1
+            }
+        }
+    ];
+
     const options = {
         page: parseInt(page),
         limit: parseInt(limit),
@@ -543,32 +627,7 @@ const getChannelVideos = asyncHandler(async (req, res) => {
     };
 
     const videos = await Video.aggregatePaginate(
-        [
-            { $match: { owner: user._id, isPublished: true } },
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "owner",
-                    foreignField: "_id",
-                    as: "owner",
-                    pipeline: [
-                        { $project: { username: 1, avatar: 1 } }
-                    ]
-                }
-            },
-            { $unwind: "$owner" },
-            {
-                $project: {
-                    title: 1,
-                    description: 1,
-                    thumbnail: 1,
-                    duration: 1,
-                    views: 1,
-                    createdAt: 1,
-                    owner: 1
-                }
-            }
-        ],
+        pipeline,
         options
     );
 

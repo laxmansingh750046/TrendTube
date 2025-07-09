@@ -9,8 +9,11 @@ cloudinary.config({
 });
 
 const extractPublicIdFromUrl = (url)=>{
-    return url.split('/').slice(-1)[0].split('.')[0];
+    const regex = /\/upload\/v\d+\/([^\.]+)\.\w+$/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
 }
+
 const uploadOnCloudinary = async (localFilePath)=>{
     try{
         if(!localFilePath)return null;
@@ -30,12 +33,12 @@ const uploadOnCloudinary = async (localFilePath)=>{
     }
 }
 
-const deleteFromCloudinary = async(url)=>{
+const deleteFromCloudinary = async(url, type="image")=>{
     try{
         if(!url)return null;
         const publicId = extractPublicIdFromUrl(url);
         const response = await cloudinary.uploader.destroy(publicId,{
-            resource_type: "auto"
+            resource_type: type
         });
         console.log("File deleted successfully ",response);
         return response;

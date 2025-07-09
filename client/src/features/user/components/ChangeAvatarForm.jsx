@@ -1,23 +1,75 @@
 import { useState } from "react";
 import userService from "../services/userService";
+import { toast } from "react-hot-toast";
 
 function ChangeAvatarForm({ onUpload }) {
   const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
+    }
+  };
 
   const handleUpload = async () => {
-    const formData = new FormData();
-    formData.append("avatar", file);
-    await userService.updateAvatar(formData);
-    onUpload();
+    if (!file) {
+      toast.error("Please select a file first");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const formData = new FormData();
+      formData.append("avatar", file);
+      await userService.updateAvatar(formData);
+      toast.success("Avatar updated successfully");
+      onUpload();
+      setPreview(null);
+    } catch (error) {
+      console.error("Failed to upload avatar:", error);
+      toast.error("Failed to update avatar");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <input type="file" accept="image/*" onChange={e => setFile(e.target.files[0])} />
-      <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={handleUpload}>
-        Upload
+    <div className="flex flex-col gap-4">
+      {preview && (
+        <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
+          <img 
+            src={preview} 
+            alt="Preview" 
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
+      
+      <input 
+        type="file" 
+        accept="image/*" 
+        onChange={handleFileChange}
+        className="block w-full text-sm text-gray-500
+          file:mr-4 file:py-2 file:px-4
+          file:rounded-md file:border-0
+          file:text-sm file:font-semibold
+          file:bg-blue-50 file:text-blue-700
+          hover:file:bg-blue-100"
+      />
+      
+      <button 
+        onClick={handleUpload}
+        disabled={isLoading || !file}
+        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isLoading ? "Uploading..." : "Upload Avatar"}
       </button>
     </div>
   );
 }
+
 export default ChangeAvatarForm;

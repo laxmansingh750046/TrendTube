@@ -21,7 +21,7 @@ const ChannelPage = () => {
                 
                 if (tab === 'videos' || !tab) {
                     const videosRes = await userService.getChannelVideos(username);
-                    setVideos(videosRes.data.data.docs || []);
+                    setVideos(videosRes.data.data.docs);
                 }
             } catch (error) {
                 console.error('Error fetching channel data:', error);

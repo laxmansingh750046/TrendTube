@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 
 function NavigationMenu() {
-  const username = useSelector((state)=> state.auth.user?.data?.user?.username);
+  const username = useSelector((state)=> state.auth.user?.username);
   const authStatus = useSelector((state) => state.auth.status);
   const navigate = useNavigate();
 
@@ -38,7 +38,7 @@ function NavigationMenu() {
   ];
 
   return (
-    <div className="w-64 h-screen bg-slate-800 text-white flex flex-col">
+    <div className="fixed z-50 w-50 h-full bg-slate-800 text-white flex flex-col">
       {/* Auth Navigation (shown when not logged in) */}
       {!authStatus && (
         <div className="space-y-1 p-2">

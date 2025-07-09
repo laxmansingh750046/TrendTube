@@ -58,6 +58,18 @@ const getAllVideos = asyncHandler(async (req, res) => {
                         else: false
                     }
                 },
+                isOwner: {
+                      $cond: {
+                        if: { 
+                          $eq: [
+                            "$owner._id",
+                            currentUserId ? new mongoose.Types.ObjectId(currentUserId) : null
+                          ] 
+                        },
+                        then: true,
+                        else: false
+                      }
+                },
                 userId: "$owner._id",
                 username: "$owner.username",
                 avatar: "$owner.avatar"
@@ -78,7 +90,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
                 username: 1,
                 avatar: 1,
                 likesCount: 1,
-                isLiked: 1
+                isLiked: 1,
+                isOwner:1
             }
         }
     ]);
@@ -237,7 +250,7 @@ const updateVideo = asyncHandler(async (req, res) => {
 
 const deleteVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
-
+  const type='video'
   if (!mongoose.Types.ObjectId.isValid(videoId)) {
     throw new ApiError(400, "Invalid video ID");
   }
@@ -252,14 +265,13 @@ const deleteVideo = asyncHandler(async (req, res) => {
   }
 
   try {
-    await deleteFromCloudinary(video.videoFile);
+    await deleteFromCloudinary(video.videoFile,type);
     await deleteFromCloudinary(video.thumbnail);
   } catch (err) {
     console.error("Cloudinary cleanup failed:", err.message);
   }
 
   await video.deleteOne();
-
   return res.status(200).json(
     new ApiResponse(200, {}, "Video deleted successfully")
   );

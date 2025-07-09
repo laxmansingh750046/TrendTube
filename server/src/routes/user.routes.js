@@ -20,7 +20,6 @@ import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { AddUser } from "../middlewares/optionalAuth.js";
 
-
 const router = Router();
 
 router.route("/register").post(
@@ -39,11 +38,11 @@ router.route("/register").post(
 router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT,logoutUser);
 router.route("/refresh-token").post(refreshAccessToken);
-router.route("/change-password").post(verifyJWT,changeCurrentPassword);
-router.route("/change-fullname").post(verifyJWT,updateFullname);
-router.route("/change-username").post(verifyJWT,updateUsername);
+router.route("/change-password").patch(verifyJWT,changeCurrentPassword);
+router.route("/change-fullname").patch(verifyJWT,updateFullname);
+router.route("/change-username").patch(verifyJWT,updateUsername);
 router.route("/current-user").get(verifyJWT, getCurrentUser);
-router.route("/change-email").post(verifyJWT,updateEmail);
+router.route("/change-email").patch(verifyJWT,updateEmail);
 router.route("/change-avatar").patch(verifyJWT, upload.single("avatar"),updateUserAvatar);
 router.route("/change-coverimage").patch(verifyJWT, upload.single("coverImage"),updateUserCoverImage);
 router.route("/u/:username").get(AddUser,getUserChannelProfile);
