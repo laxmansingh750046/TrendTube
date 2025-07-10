@@ -19,8 +19,10 @@ function App() {
     authServices.getCurrentUser()
       .then(userData => {
         if(userData) {
+          console.log(userData);
           dispatch(setUser({user: userData.data.user}));
         } else {
+          console.log(userData);
           dispatch(logout());
         } 
       }) 
@@ -40,7 +42,7 @@ function App() {
        {hideNav && <NavigationMenu />}
        
         <div className= {`flex-1 ${hideNav?"pl-56":"pl-30"} flex flex-col min-h-[calc(100vh-4rem)]`} >
-          <main className="flex-1 bg-slate-900">
+          <main className="flex-1 bg-slate-900 mt-14">
             <Outlet />
           </main>
         </div>
