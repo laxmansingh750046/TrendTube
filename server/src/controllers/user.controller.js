@@ -109,18 +109,31 @@ const registerUser = asyncHandler(async(req,res)=>{
     const{accessToken,refreshToken} = await generateAccessAndRefereshTokens(createdUser._id);
     
 
-    const options = {
-        httpOnly: true,
-        secure: true,
-        maxAge: 30 * 24 * 60 * 60 * 1000
-    }
+    const origin = req.headers.origin || "";
+    const isLocalhost = origin.includes("localhost");
 
-    return res.status(201)
-     .cookie("accessToken",accessToken,options)
-     .cookie("refreshToken",refreshToken,options)
-     .json(
-        new ApiResponse(200, createdUser, "User Registered Successfully")
-     );
+    const options = {
+    httpOnly: true,
+    secure: !isLocalhost,                         // false for localhost
+    sameSite: isLocalhost ? 'Lax' : 'None',       // Lax for localhost
+    path: '/',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    };
+
+    return res.status(200)
+    .cookie("accessToken",accessToken,options)
+    .cookie("refreshToken",refreshToken,options)
+    .json(
+        new ApiResponse(
+            200,
+            {
+                user: loggedInUser,
+                at: accessToken,
+                rt: refreshToken
+            },
+            "User logged in successfully"
+        )
+    )
 });
 
 const loginUser = asyncHandler(async(req,res)=>{
@@ -162,11 +175,16 @@ const loginUser = asyncHandler(async(req,res)=>{
     const loggedInUser = await User.findById(user._id)
     .select("-password -refreshToken");
 
+    const origin = req.headers.origin || "";
+    const isLocalhost = origin.includes("localhost");
+
     const options = {
-        httpOnly: true,
-        secure: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000
-    }
+    httpOnly: true,
+    secure: !isLocalhost,                         // false for localhost
+    sameSite: isLocalhost ? 'Lax' : 'None',       // Lax for localhost
+    path: '/',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    };
 
     return res.status(200)
     .cookie("accessToken",accessToken,options)
