@@ -30,7 +30,16 @@ const getVideoComments = asyncHandler(async (req, res) => {
             }
         },
         {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "comment",
+                as: "commentLikes"
+            }
+        },
+        {
             $addFields: {
+                likesCount: { $size: "$commentLikes" },
                 // Only add priority if currentUserId exists (user is logged in)
                 priorityOrder: currentUserId ? {
                     $switch: {
@@ -51,8 +60,9 @@ const getVideoComments = asyncHandler(async (req, res) => {
         },
         {
             $sort: {
-                createdAt: -1, // Newest comments first
-                priorityOrder: -1 // Then sort by priority if same timestamp
+                likesCount: -1, // Sort by most likes first
+                priorityOrder: -1, // Then by priority (video owner > current user > others)
+                createdAt: -1 // Then by newest comments
             }
         },
         {
@@ -73,16 +83,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
             $unwind: "$ownerInfo"
         },
         {
-            $lookup: {
-                from: "likes",
-                localField: "_id",
-                foreignField: "comment",
-                as: "commentLikes"
-            }
-        },
-        {
             $addFields: {
-                likesCount: { $size: "$commentLikes" },
                 isLiked: currentUserId ? {
                     $in: [new mongoose.Types.ObjectId(currentUserId), {
                         $map: {
