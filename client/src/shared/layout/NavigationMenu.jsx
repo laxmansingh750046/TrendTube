@@ -12,7 +12,8 @@ import {
   LogIn,
   UserPlus,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Info // Added Info icon for About page
 } from 'lucide-react';
 
 function NavigationMenu({ isMinimized, toggleMinimize }) {
@@ -36,6 +37,7 @@ function NavigationMenu({ isMinimized, toggleMinimize }) {
     { name: 'Playlists', slug: '/playlists', icon: <Play size={20} />, active: authStatus },
     { name: 'Your Videos', slug: '/your-videos', icon: <Video size={20} />, active: authStatus },
     { name: 'Liked Videos', slug: '/liked-videos', icon: <ThumbsUp size={20} />, active: authStatus },
+    { name: 'About', slug: '/about', icon: <Info size={20} />, active: true }, // Added About page
   ];
 
   return (
@@ -69,6 +71,19 @@ function NavigationMenu({ isMinimized, toggleMinimize }) {
                 </NavLink>
               )
           )}
+          {/* Add About link for non-logged-in users */}
+          <NavLink
+            to="/about"
+            className={({ isActive }) => 
+              `flex items-center ${isMinimized ? 'justify-center' : 'space-x-3'} w-full px-3 py-2 rounded ${
+                isActive ? 'bg-slate-600' : 'hover:bg-slate-500'
+              }`
+            }
+            title={isMinimized ? 'About' : ''}
+          >
+            <Info size={20} />
+            {!isMinimized && <span>About</span>}
+          </NavLink>
         </div>
       )}
 
