@@ -19,6 +19,7 @@ import ChannelPage from './features/user/pages/ChannelPage';
 import EditProfile from './features/user/pages/EditProfile';
 import WatchHistoryPage from './features/history/pages/WatchHistory.jsx'; 
 import AuthLayout from './shared/layout/AuthLayout.jsx'
+import About from './features/about/About.jsx'
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       { path: 'u/:username/:tab?', element:  <ChannelPage /> },
       { path: 'channel/edit', element: <AuthLayout authentication={true}> <EditProfile /> </AuthLayout> },
       { path: 'history', element: <AuthLayout authentication={true}> <WatchHistoryPage /> </AuthLayout> },
+      { path: '/about', element: <About />},
     ]
   }
 ]);
