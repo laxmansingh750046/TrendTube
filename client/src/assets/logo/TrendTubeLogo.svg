@@ -1,0 +1,8 @@
+<svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <rect width="100%" height="100%" fill="#0f172a"/>
+  <g font-family="Arial, sans-serif" font-weight="bold">
+    <rect x="30" y="40" rx="20" ry="20" width="180" height="100" fill="#FF0000"/>
+    <text x="60" y="105" font-size="40" fill="#fff">TREND</text>
+    <text x="230" y="105" font-size="60" fill="#fff">Tube</text>
+  </g>
+</svg>

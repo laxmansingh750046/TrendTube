@@ -1,9 +1,16 @@
-import React from 'react'
+import logo from '../../assets/logo/TrendTubeLogo.svg';
 
-function Logo({width = "100px"}) {
+function Logo({ width = "100px" }) {
   return (
-    <div>Logo</div>
-  )
+    <div className="flex items-center">
+      <img
+        src={logo}
+        alt="TrendTube Logo"
+        style={{ width }}
+        className="h-auto"
+      />
+    </div>
+  );
 }
 
-export default Logo
+export default Logo;
