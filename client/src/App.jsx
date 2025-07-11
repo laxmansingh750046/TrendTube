@@ -1,36 +1,35 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, Outlet } from 'react-router-dom';
 import authServices from './features/auth/services/authServices.js';
 import Header from './shared/layout/Header.jsx';
 import Footer from './shared/layout/Footer.jsx';
 import { useDispatch } from 'react-redux';
-import NavigationMenu from './shared/layout/NavigationMenu.jsx'
+import NavigationMenu from './shared/layout/NavigationMenu.jsx';
 import { setUser, logout } from './features/auth/authSlice';
 
 function App() {
   const [loading, setLoading] = useState(false);
+  const [isNavMinimized, setIsNavMinimized] = useState(false); // New state for nav minimized
   const dispatch = useDispatch();
   const location = useLocation();
   const hideNavRoutes = ['/watch'];
-  const hideNav = !hideNavRoutes.includes(location.pathname);
+  const hideNav = hideNavRoutes.includes(location.pathname);
   
   useEffect(() => {
     setLoading(true);
     authServices.getCurrentUser()
       .then(userData => {
         if(userData) {
-          console.log(userData);
           dispatch(setUser({user: userData.data.user}));
         } else {
-          console.log(userData);
           dispatch(logout());
         } 
-      }) 
+      })  
       .catch(err => {
         console.error('Error fetching user data in app.jsx:', err);
       })  
       .finally(() => setLoading(false));
-  }, [])
+  }, []);
 
   if(loading) return <div className='h-full w-full flex justify-center items-center'><h1>Loading ...</h1></div>
 
@@ -39,9 +38,14 @@ function App() {
       <Header />
       
       <div className="flex flex-1 relative">
-       {hideNav && <NavigationMenu />}
+        {!hideNav && 
+          <NavigationMenu 
+            isMinimized={isNavMinimized} 
+            toggleMinimize={() => setIsNavMinimized(!isNavMinimized)} 
+          />
+        }
        
-        <div className= {`flex-1 ${hideNav?"pl-56":"pl-30"} flex flex-col min-h-[calc(100vh-4rem)]`} >
+        <div className={`flex-1 transition-all duration-300 ${hideNav ? "pl-0": (isNavMinimized ? "pl-20" : "pl-56")} flex flex-col min-h-[calc(100vh-4rem)]`}>
           <main className="flex-1 bg-slate-900 mt-14">
             <Outlet />
           </main>

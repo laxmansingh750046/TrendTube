@@ -1,6 +1,6 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector} from 'react-redux';
-import  LogoutConfirmation  from '../../features/auth/pages/LogoutConfirmation.jsx';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import LogoutConfirmation from '../../features/auth/pages/LogoutConfirmation.jsx';
 import { 
   Home, 
   Upload, 
@@ -8,24 +8,17 @@ import {
   Play, 
   Video, 
   ThumbsUp,
-  LogOut,
   User,
   LogIn,
   UserPlus,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
-import { useState } from 'react';
 
-function NavigationMenu() {
-  const username = useSelector((state)=> state.auth.user?.username);
+function NavigationMenu({ isMinimized, toggleMinimize }) {
+  const username = useSelector((state) => state.auth.user?.username);
   const authStatus = useSelector((state) => state.auth.status);
   const navigate = useNavigate();
-  const [isMinimized, setIsMinimized] = useState(false);
-
-  const toggleMinimize = () => {
-    setIsMinimized(!isMinimized);
-  };
 
   const authItems = [
     { name: 'Login', slug: '/login', icon: <LogIn size={20} />, active: !authStatus },
@@ -61,15 +54,19 @@ function NavigationMenu() {
           {authItems.map(
             (item) =>
               item.active && (
-                <button
+                <NavLink
                   key={item.name}
-                  onClick={() => navigate(item.slug)}
-                  className={`flex items-center ${isMinimized ? 'justify-center' : 'space-x-3'} w-full px-3 py-2 hover:bg-slate-400 rounded`}
+                  to={item.slug}
+                  className={({ isActive }) => 
+                    `flex items-center ${isMinimized ? 'justify-center' : 'space-x-3'} w-full px-3 py-2 rounded ${
+                      isActive ? 'bg-slate-600' : 'hover:bg-slate-500'
+                    }`
+                  }
                   title={isMinimized ? item.name : ''}
                 >
                   {item.icon}
                   {!isMinimized && <span>{item.name}</span>}
-                </button>
+                </NavLink>
               )
           )}
         </div>
@@ -81,15 +78,19 @@ function NavigationMenu() {
           {mainItems.map(
             (item) =>
               item.active && (
-                <button
+                <NavLink
                   key={item.name}
-                  onClick={() => navigate(item.slug)}
-                  className={`flex items-center ${isMinimized ? 'justify-center' : 'space-x-3'} w-full px-3 py-2 hover:bg-slate-400 rounded`}
+                  to={item.slug}
+                  className={({ isActive }) => 
+                    `flex items-center ${isMinimized ? 'justify-center' : 'space-x-3'} w-full px-3 py-2 rounded ${
+                      isActive ? 'bg-slate-600' : 'hover:bg-slate-500'
+                    }`
+                  }
                   title={isMinimized ? item.name : ''}
                 >
                   {item.icon}
                   {!isMinimized && <span>{item.name}</span>}
-                </button>
+                </NavLink>
               )
           )}
         </div>
@@ -103,15 +104,19 @@ function NavigationMenu() {
               {secondaryItems.map(
                 (item) =>
                   item.active && (
-                    <Link
+                    <NavLink
                       key={item.name}
                       to={item.slug}
-                      className={`flex items-center ${isMinimized ? 'justify-center' : 'space-x-3'} px-3 py-2 hover:bg-slate-400 rounded`}
+                      className={({ isActive }) => 
+                        `flex items-center ${isMinimized ? 'justify-center' : 'space-x-3'} px-3 py-2 rounded ${
+                          isActive ? 'bg-slate-600' : 'hover:bg-slate-500'
+                        }`
+                      }
                       title={isMinimized ? item.name : ''}
                     >
                       {item.icon}
                       {!isMinimized && <span>{item.name}</span>}
-                    </Link>
+                    </NavLink>
                   )
               )}
             </div>

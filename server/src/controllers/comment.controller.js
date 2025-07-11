@@ -148,16 +148,21 @@ const getCommentReply = asyncHandler(async (req, res) => {
          {
             $addFields: {
                 likesCount: { $size: "$commentLikes" },
-                isLiked: {
-                $in: [new mongoose.Types.ObjectId(req.user._id), {
-                    $map: {
-                    input: "$commentLikes",
-                    as: "like",
-                    in: "$$like.owner"
+                isLiked: req.user?._id
+                    ? {
+                        $in: [
+                        req.user?._id,
+                        {
+                            $map: {
+                            input: "$commentLikes",
+                            as: "like",
+                            in: "$$like.owner"
+                            }
+                        }
+                        ]
                     }
-                }]
+                    : false
                 }
-            }
         },
         {
             $project: {

@@ -4,13 +4,23 @@ import formatTime from "../../../shared/utils/formatTime.js";
 import commentService from "../api/index.js";
 import LikeButton from "../../../shared/components/LikeButton.jsx";
 import {useNavigate} from 'react-router-dom'
+import { useSelector } from "react-redux";
+import AuthPrompt from "../../auth/components/AuthPrompt.jsx";
+
 
 const CommentItem = ({ comment, onSuccess, onAddingNewReply }) => {
   const [showReplyBox, setShowReplyBox] = useState(false);
+  const [showLoggedInMessage, setShowLoggedInMessage] = useState(false);
   const navigate = useNavigate();
+  const isLoggedIn = useSelector(state => state.auth.status);
   const toggleReplyBox = () => {
-    setShowReplyBox(prev => !prev);
+    if(isLoggedIn) setShowReplyBox(prev => !prev);
+    else setShowLoggedInMessage(true);
   };
+
+  const closeMessageBox = ()=>{
+    setShowLoggedInMessage(false);
+  }
 
   const handleReply = async (replyText) => {
     await commentService.onReplySubmit(comment._id, replyText);
@@ -62,9 +72,13 @@ const CommentItem = ({ comment, onSuccess, onAddingNewReply }) => {
           {/* Reply box */}
           {showReplyBox && (
             <div className="ml-10 mt-3">
-              <CommentBox onSubmit={handleReply} actionType="reply" />
+              <CommentBox onSubmit={handleReply} actionType="reply" autoFocus={true}/>
             </div>
           )}
+          {
+            showLoggedInMessage && <AuthPrompt closeMessageBox={closeMessageBox}
+            headline ={"Want to join the conversation?"} subtext={"Sign in to continue"} />
+          }
         </div>
       </div>
     </div>
