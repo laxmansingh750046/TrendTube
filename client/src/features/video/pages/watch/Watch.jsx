@@ -112,7 +112,7 @@ const viewTimerRef = useRef(null);
             description={video.description} updatedAt={video.updatedAt}/>
         </div>
        
-        <CommentAndUpnext videoId={videoId}/>
+        <CommentAndUpnext videoId={videoId} initialTab={"upnext"}/>
       </div>
        </>
         ) : (
@@ -120,7 +120,7 @@ const viewTimerRef = useRef(null);
         )}
 
       {/* right container */}
-      <div className='text-white w-[35%] px-2 flex flex-col flex-center'>
+      <div className='text-white w-[35%] px-2 pt-3 flex flex-col flex-center'>
         {/* Toggle button */}
        {video &&<CommentAndUpnext videoId={videoId} comment={true}/>}
       </div>
