@@ -29,7 +29,6 @@ const getCookieOptions = () => ({
   secure: true,
   sameSite: 'None',
   path: '/',
-  domain: 'trend-tube-drab.vercel.app', // Explicit domain for cross-site cookies
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 });
 
