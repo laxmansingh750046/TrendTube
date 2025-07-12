@@ -4,17 +4,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import formatDuration from '../../../shared/utils/formatDuration.js'
 import VideoOptionsMenu from './VideoOptionsMenu.jsx';
 
-function VideoCard({ video , onVideoDeleted = ()=>{}, onVideoDeleteError = ()=>{}}) {
+function VideoCard({ video , onVideoDeleted =null, onVideoDeleteError = null}) {
   const navigate= useNavigate();
   const publicId = extractPublicId(video.videoFile);
   const duration=formatDuration(video.duration);
 
   const onDelete = ()=>{
-    onVideoDeleted(video._id, video.title);
+    if(onVideoDeleted)onVideoDeleted(video._id, video.title);
   }
 
   const onDeleteError = ()=>{
-    onVideoDeleteError(video._id, video.title);
+    if(onVideoDeleteError)onVideoDeleteError(video._id, video.title);
   }
 
   return (

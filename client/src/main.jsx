@@ -11,6 +11,7 @@ import Login from './features/auth/pages/Login';
 import Register from './features/auth/pages/Register';
 import TweetFeed from './features/tweet/pages/TweetFeed';
 import TweetDetails from './features/tweet/pages/TweetDetails';
+import LikedVideos from './features/likes/page/LikedVideos.jsx'
 import Watch from './features/video/pages/watch/Watch.jsx';
 import VideoPlayer from './features/video/components/VideoPlayer.jsx';
 import UploadVideo from './features/video/pages/uploadVideo/UploadVideo.jsx'
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
       { path: 'channel/edit', element: <AuthLayout authentication={true}> <EditProfile /> </AuthLayout> },
       { path: 'history', element: <AuthLayout authentication={true}> <WatchHistoryPage /> </AuthLayout> },
       { path: '/about', element: <About />},
+      { path: '/liked-videos', element: <LikedVideos />},
     ]
   }
 ]);

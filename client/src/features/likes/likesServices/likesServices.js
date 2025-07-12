@@ -18,8 +18,18 @@ const onLikeVideo = async (videoId)=>{
     }
 }
 
+const getAllLikedVideos = async ()=>{
+    try{
+        const res = await API.get('/likes/videos');
+        return res; 
+    }catch (error){
+        throw error.response?.data || error.message;
+    }
+}
+
 const likeServices = {
     onLikeComment,
-    onLikeVideo
+    onLikeVideo,
+    getAllLikedVideos
 }
 export default likeServices;

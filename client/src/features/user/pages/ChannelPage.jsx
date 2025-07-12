@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Routes, Route, Navigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { ChannelHeader } from '../components/ChannelHeader.jsx';
 import { ChannelTabs } from '../components/ChannelTabs.jsx';
 import VideoGrid from '../components/VideoGrid.jsx';
@@ -46,7 +46,7 @@ const ChannelPage = () => {
     );
     
     return (
-        <div className="bg-slate-900 min-h-screen text-slate-100">
+        <div className="bg-slate-900 min-h-screen mt-4 text-slate-100">
             <ChannelHeader channel={channel} />
             <ChannelTabs username={username} activeTab={tab} />
             

@@ -31,8 +31,8 @@ function EditProfile() {
   if (isLoading) return <div className="text-center py-8">Loading...</div>;
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Edit Profile</h1>
+    <div className="max-w-4xl mt-5 mx-auto p-4">
+      <h1 className="text-2xl text-white font-bold mb-6">Edit Profile</h1>
       
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar Navigation */}
@@ -106,7 +106,7 @@ function EditProfile() {
           )}
 
           {activeTab === "password" && (
-            <ChangePasswordForm />
+            <ChangePasswordForm onUpload={fetchProfile}/>
           )}
         </div>
       </div>
