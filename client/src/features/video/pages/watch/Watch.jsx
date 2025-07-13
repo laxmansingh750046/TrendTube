@@ -5,6 +5,7 @@ import videoService from '../../services/videoService.js';
 import VideoLikeButton from '../../../../shared/components/VideoLikeButton.jsx'
 import DescriptionBox from '../../../../shared/components/DescriptionBox.jsx';
 import CommentAndUpnext from './CommentAndUpnext.jsx';
+import historyService from '../../../history/services/historyService.js';
 import { Link } from 'react-router-dom';
 
 function Watch() {
@@ -16,24 +17,21 @@ const [searchParams] = useSearchParams();
 const viewTimerRef = useRef(null);
 
    const onPlay = () => {
-    if (viewTimerRef.current || !video?._id) return;
-
+      if (viewTimerRef.current || !video?._id) return;
+      
       const durationInSeconds = Number(video.duration);
-      const isValidDuration = !isNaN(durationInSeconds);
-      const waitTime = isValidDuration && durationInSeconds <= 30
-        ? durationInSeconds * 1000
-        : 30000;
-
+      
+      if (isNaN(durationInSeconds)) return;
+      
+      const waitTime = Math.max(5000, Math.min(durationInSeconds * 500, 30000));
       viewTimerRef.current = setTimeout(() => {
         videoService.incrementView(video._id)
           .catch((err) => console.error("Failed to increment view", err));
-
-        // setVideo((prev) => ({
-        //    ...prev,
-        //    views: prev.views + 1,
-        // }));
+        
+        historyService.addToWatchHistory(video._id)
+          .catch((err) => console.error("Failed to add to watch history", err));
       }, waitTime);
-   };
+  };
 
    useEffect(() => {
     return () => {

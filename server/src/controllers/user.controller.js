@@ -382,55 +382,112 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     );
 });
 
-const getWatchHistory = asyncHandler(async(req,res)=>{
-    if(!req.user){
-        throw ApiError(403," loged in to watch history")
-    }
-    const user = await User.aggregate([
-        {   
-            $match: {
-                _id: new mongoose.Types.ObjectId(req.user._id)
-            }
-        },
+const getWatchHistory = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+    const currentUserId = req.user._id;
+   
+    const pipeline = [
+        { $match: { _id: new mongoose.Types.ObjectId(currentUserId) } },
+        { $unwind: "$watchHistory" },
+        { $sort: { "watchHistory.createdAt": -1 } },
         {
             $lookup: {
                 from: "videos",
-                localField: "watchHistory",
+                localField: "watchHistory.video",
                 foreignField: "_id",
-                as: "watchHistory",
+                as: "video"
+            }
+        },
+        { $unwind: "$video" },
+        { $match: { "video.isPublished": true } },
+        { $replaceRoot: { newRoot: "$video" } },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
                 pipeline: [
-                    {
-                        $lookup: {
-                            from : "users",
-                            localField: "owner",
-                            foreignField: "_id",
-                            as: "owner",
-                            pipeline: [
-                                {
-                                    $project: {
-                                        fullname: 1,
-                                        username: 1,
-                                        avatar: 1
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        $addFields: {
-                            owner: {
-                                $first: "$owner"
-                            }
-                        }
-                    }
+                    { $project: { username: 1, avatar: 1 } }
                 ]
             }
+        },
+        { $unwind: "$owner" },
+        {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "video",
+                as: "likes"
+            }
+        },
+        {
+            $addFields: {
+                likesCount: { $size: "$likes" },
+                isLiked: {
+                    $cond: {
+                        if: { 
+                            $in: [
+                                new mongoose.Types.ObjectId(currentUserId), 
+                                "$likes.owner"
+                            ] 
+                        },
+                        then: true,
+                        else: false
+                    }
+                },
+                isOwner: {
+                    $cond: {
+                        if: {
+                            $eq: [
+                                "$owner._id",
+                                new mongoose.Types.ObjectId(currentUserId)
+                            ]
+                        },
+                        then: true,
+                        else: false
+                    }
+                },
+                userId: "$owner._id",
+                username: "$owner.username",
+                avatar: "$owner.avatar",
+            }
+        },
+        {
+            $project: {
+                _id: 1,
+                videoFile: 1,
+                thumbnail: 1,
+                title: 1,
+                description: 1,
+                duration: 1,
+                views: 1,
+                createdAt: 1,
+                updatedAt: 1,
+                userId: 1,
+                username: 1,
+                avatar: 1,
+                likesCount: 1,
+                isLiked: 1,
+                isOwner: 1,
+            }
         }
-    ]);
+    ];
 
-    return res
-    .status(200)
-    .json( new ApiResponse(200, user[0].watchHistory, "watched history fetched successfully"));
+    const options = {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        sort: { createdAt: -1 } // Changed from watchedAt to createdAt
+    };
+
+    const videos = await User.aggregatePaginate(
+        User.aggregate(pipeline),
+        options
+    );
+
+    return res.status(200).json(
+        new ApiResponse(200, videos, "Watch history fetched successfully")
+    );
 });
 
 const getChannelVideos = asyncHandler(async (req, res) => {
@@ -542,6 +599,64 @@ const getChannelVideos = asyncHandler(async (req, res) => {
     );
 });
 
+const removeFromWatchHistory = asyncHandler(async (req, res) => {
+    const { videoId } = req.body;
+    const userId = req.user._id;
+
+    if (!videoId) throw new ApiError(400, "Video ID is required");
+    if (!mongoose.Types.ObjectId.isValid(videoId)) throw new ApiError(400, "Invalid video id");
+
+    const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+            $pull: { watchHistory: { video: videoId } }
+        },
+        { new: true }
+    );
+
+    if (!updatedUser) {
+        throw new ApiError(404, "User not found");
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "Video removed from watch history successfully")
+    );
+});
+
+const addToWatchHistory = asyncHandler(async (req, res) => {
+    const { videoId } = req.body;
+    const userId = req.user._id;
+
+    if (!videoId) throw new ApiError(400, "VideoId is required");
+    if (!mongoose.Types.ObjectId.isValid(videoId)) {
+        throw new ApiError(400, "Invalid video id");
+    }
+
+    await User.findByIdAndUpdate(
+        userId,
+        { $pull: { watchHistory: { video: videoId } } }
+    );
+
+    const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { $push: { watchHistory: { video: videoId, $position: 0 } } },
+        { new: true }
+    ).populate({
+        path: 'watchHistory.video',
+        select: 'title thumbnail duration'
+    });
+
+    if (!updatedUser) throw new ApiError(404, "User not found");
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            { watchHistory: updatedUser.watchHistory[0] },
+            "Video added to watch history"
+        )
+    );
+});
+
 export { 
     registerUser,
     loginUser,
@@ -556,5 +671,7 @@ export {
     updateUserCoverImage,
     getUserChannelProfile,
     getWatchHistory,
-    getChannelVideos
+    getChannelVideos,
+    removeFromWatchHistory,
+    addToWatchHistory
 };
