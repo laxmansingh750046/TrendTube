@@ -111,20 +111,20 @@ function PlaylistPage() {
 
   if (loading && !selectedPlaylist) {
     return (
-       <div className="p-4 mt-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-white">
-          {selectedPlaylist ? selectedPlaylist.name : 'Your Playlists'}
-        </h1>
-         <button
-            onClick={() => setShowCreateModal(true)}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
-          >
-            Create Playlist
-          </button>
-      </div>
-      </div>
-    )
+        <div className="p-4 mt-4">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-bold text-white">Your Playlists</h1>
+            <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded">
+              Create Playlist
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="bg-gray-800 p-4 rounded-lg h-40 animate-pulse"></div>
+            ))}
+          </div>
+        </div>
+      );
   }
 
   return (
@@ -133,6 +133,38 @@ function PlaylistPage() {
         <h1 className="text-3xl font-bold text-white">
           {selectedPlaylist ? selectedPlaylist.name : 'Your Playlists'}
         </h1>
+        
+        {!selectedPlaylist && playlists.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="text-gray-400 mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-16 w-16 mx-auto"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1}
+                  d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
+                />
+              </svg>
+            </div>
+            <h3 className="text-xl text-white mb-2">No Playlists Yet</h3>
+            <p className="text-gray-400 mb-6 max-w-md">
+              You haven't created any playlists yet. Create your first playlist to organize your favorite videos.
+            </p>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg"
+            >
+              Create First Playlist
+            </button>
+          </div>
+        )}
+        
         {!selectedPlaylist && (
           <button
             onClick={() => setShowCreateModal(true)}

@@ -26,11 +26,11 @@ export const ChannelHeader = ({ channel }) => {
             <div className="px-6 py-4 flex flex-col md:flex-row items-start md:items-center">
                 <div className="relative -mt-16 md:-mt-12">
                     <div className="w-32 h-32 rounded-full bg-white border-4 border-white overflow-hidden">
-                        <img 
+                        {channel.avatar && (<img 
                             src={channel.avatar} 
                             alt={channel.username}
                             className="w-full h-full object-cover"
-                        />
+                        />)}
                     </div>
                 </div>
                 

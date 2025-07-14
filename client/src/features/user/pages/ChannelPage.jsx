@@ -19,7 +19,6 @@ const ChannelPage = () => {
                 setLoading(true);
                 const channelRes = await userService.getChannelByUsername(username);
                 setChannel(channelRes.data.data);
-                
                 if (tab === 'videos' || !tab) {
                     const videosRes = await userService.getChannelVideos(username);
                     setVideos(videosRes.data.data.docs);

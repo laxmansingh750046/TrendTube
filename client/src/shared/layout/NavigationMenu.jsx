@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 
 function NavigationMenu({ isMinimized, toggleMinimize }) {
+  const state = useSelector((state) => state);
   const username = useSelector((state) => state.auth.user?.username);
   const authStatus = useSelector((state) => state.auth.status);
   const navigate = useNavigate();
