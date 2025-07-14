@@ -5,6 +5,7 @@ import { ChannelTabs } from '../components/ChannelTabs.jsx';
 import VideoGrid from '../components/VideoGrid.jsx';
 import userService from '../services/userService.js';
 import { Spinner } from '../components/Spinner.jsx';
+import PlaylistPage from '../../playlist/page/PlaylistPage.jsx';
 
 const ChannelPage = () => {
     const { username, tab } = useParams();
@@ -63,7 +64,7 @@ const ChannelPage = () => {
 const PlaylistsTab = ({ channelId }) => {
     return (
         <div className="text-gray-100">
-            Playlists will be shown here
+            <PlaylistPage />
         </div>
     );
 };
