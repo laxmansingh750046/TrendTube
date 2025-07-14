@@ -35,7 +35,6 @@ function NavigationMenu({ isMinimized, toggleMinimize }) {
     { name: 'Profile', slug: `/u/${username}`, icon: <User size={20} />, active: authStatus },
     { name: 'History', slug: '/history', icon: <History size={20} />, active: authStatus },
     { name: 'Playlists', slug: '/playlists', icon: <Play size={20} />, active: authStatus },
-    { name: 'Your Videos', slug: '/your-videos', icon: <Video size={20} />, active: authStatus },
     { name: 'Liked Videos', slug: '/liked-videos', icon: <ThumbsUp size={20} />, active: authStatus },
     { name: 'About', slug: '/about', icon: <Info size={20} />, active: true }, // Added About page
   ];

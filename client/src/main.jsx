@@ -21,6 +21,7 @@ import EditProfile from './features/user/pages/EditProfile';
 import WatchHistory from './features/history/pages/WatchHistory.jsx'; 
 import AuthLayout from './shared/layout/AuthLayout.jsx'
 import About from './features/about/About.jsx'
+import PlaylistPage from './features/playlist/page/PlaylistPage.jsx';
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
       { path: '/about', element: <About />},
       { path: '/liked-videos', element:<AuthLayout authentication={true}> <LikedVideos /></AuthLayout>},
       { path: '/history', element:<AuthLayout authentication={true}> <WatchHistory /></AuthLayout>},
+      { path: '/playlists', element:<AuthLayout authentication={true}> <PlaylistPage /></AuthLayout>},
     ]
   }
 ]);

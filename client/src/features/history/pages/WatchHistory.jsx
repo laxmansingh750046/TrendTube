@@ -13,7 +13,6 @@ function WatchHistory() {
       try {
         setLoading(true);
         const response = await historyService.getWatchHistory();
-        console.log("history res: ",response);
         setVideos(response?.data?.data?.docs || []);
       } catch (error) {
         console.error("Error fetching watch history:", error);

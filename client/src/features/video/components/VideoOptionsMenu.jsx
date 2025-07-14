@@ -1,28 +1,34 @@
 import { useState, useRef, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { MoreVertical, Trash2, Share2, ListPlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import videoServices from '../services/videoService.js';
+import AddToPlaylist from '../../playlist/page/AddToPlaylist.jsx';
 
 export default function VideoOptionsMenu({ videoId, publicId, isOwner = false, onDelete, onDeleteError }) {
   const [showOptions, setShowOptions] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const optionsRef = useRef(null);
+
+  // Check if user is logged in
+  const isLoggedIn = useSelector(state => state.auth.status);
 
   const handleClickOutside = (event) => {
     if (optionsRef.current && !optionsRef.current.contains(event.target)) {
       setShowOptions(false);
       setShowConfirm(false);
+      setShowPlaylistModal(false);
     }
   };
 
   useEffect(() => {
-    if (showOptions || showConfirm) {
+    if (showOptions || showConfirm || showPlaylistModal) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showOptions, showConfirm]);
+  }, [showOptions, showConfirm, showPlaylistModal]);
 
   const handleShare = (e) => {
     e.stopPropagation();
@@ -87,16 +93,23 @@ export default function VideoOptionsMenu({ videoId, publicId, isOwner = false, o
               <Share2 className="mr-2" size={16} />
               Share
             </button>
-            <button 
-              className="flex items-center w-full px-4 py-2 text-gray-300 hover:bg-slate-700"
-            >
-              <ListPlus className="mr-2" size={16} />
-              Save to Playlist
-            </button>
+            {isLoggedIn && (
+              <button 
+                className="flex items-center w-full px-4 py-2 text-gray-300 hover:bg-slate-700"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowPlaylistModal(true);
+                }}
+              >
+                <ListPlus className="mr-2" size={16} />
+                Save to Playlist
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
 
+      {/* Delete Confirmation Modal */}
       <AnimatePresence>
         {showConfirm && (
           <motion.div
@@ -129,6 +142,20 @@ export default function VideoOptionsMenu({ videoId, publicId, isOwner = false, o
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Playlist Selection Modal - Using the reusable component */}
+      {showPlaylistModal && (
+        <AddToPlaylist 
+          videoId={videoId} 
+          onClose={() => {
+            setShowPlaylistModal(false);
+            setShowOptions(false);
+          }}
+          closePlaylistModal={()=>{
+            setShowPlaylistModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }
