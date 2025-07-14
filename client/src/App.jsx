@@ -45,7 +45,7 @@ function App() {
           />
         }
        
-        <div className={`flex-1 transition-all duration-300 ${hideNav ? "pl-0": (isNavMinimized ? "pl-20" : "pl-56")} flex flex-col min-h-[calc(100vh-4rem)]`}>
+        <div className={`flex-1 transition-all duration-300 mr-5 ${hideNav ? "pl-4": (isNavMinimized ? "pl-20" : "pl-56")} flex flex-col min-h-[calc(100vh-4rem)]`}>
           <main className="flex-1 bg-slate-900 mt-14">
             <Outlet />
           </main>
