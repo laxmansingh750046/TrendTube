@@ -22,7 +22,6 @@ const createPlaylist = asyncHandler(async (req, res) => {
   return res.status(201).json(new ApiResponse(201, playlist, "Playlist created"));
 });
 
-
 const getUserPlaylists = asyncHandler(async (req, res) => {
   let { userId } = req.params;
   if(userId === "owner")userId = req.user._id;
@@ -34,7 +33,6 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
 
   return res.status(200).json(new ApiResponse(200, playlists, "User playlists fetched"));
 });
-
 
 const getPlaylistById = asyncHandler(async (req, res) => {
   const { playlistId } = req.params;
@@ -51,7 +49,6 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 
   return res.status(200).json(new ApiResponse(200, playlist, "Playlist fetched"));
 });
-
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
   const { playlistId, videoId } = req.params;
