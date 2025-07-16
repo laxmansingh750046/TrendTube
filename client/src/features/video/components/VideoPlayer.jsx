@@ -23,7 +23,7 @@ function VideoPlayer({ publicId, onPlay }) {
 
   return (
     <div className="h-full w-full" ref={containerRef}>
-      <AdvancedVideo className="h-full w-full" cldVid={myVideo} controls />
+      <AdvancedVideo className="w-full aspect-video" cldVid={myVideo} controls />
     </div>
   );
 }

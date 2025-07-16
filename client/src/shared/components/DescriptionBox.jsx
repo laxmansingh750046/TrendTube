@@ -9,7 +9,7 @@ function DescriptionBox({ views, createdAt, description, updatedAt = createdAt }
   const handleToggle = () => setExpanded(prev => !prev);
 
   return (
-    <div className="text-base text-gray-200 bg-[#1e1e1e] p-4 mr-5 mt-2 rounded-lg">
+    <div className="text-base text-gray-200 bg-[#1e1e1e] p-3 rounded-lg">
       {/* Header Info */}
       {!expanded ? (
         <div className="text-gray-300 mb-2 flex gap-3">

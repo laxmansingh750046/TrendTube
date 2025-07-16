@@ -128,8 +128,24 @@ const getVideoById = asyncHandler(async (req, res) => {
             }
         },
         {
+          $lookup: {
+            from: "subscriptions",
+            localField: "owner._id",
+            foreignField: "channel",
+            as: "subscribersDetail"
+          }
+        },
+        {
             $addFields: {
                 likesCount: { $size: "$likes" },
+                subscribers: {$size: "$subscribersDetail"},
+                isSubscribed: {
+                    $cond: {
+                        if: {$in: [currentUserId ? new mongoose.Types.ObjectId(currentUserId): null, "$subscribersDetail.subscriber"]},
+                        then: true,
+                        else: false
+                      }
+                },
                 isLiked: {
                     $cond: {
                         if: { $in: [currentUserId ? new mongoose.Types.ObjectId(currentUserId) : null, "$likes.owner"] },
@@ -157,16 +173,16 @@ const getVideoById = asyncHandler(async (req, res) => {
                 username: 1,
                 avatar: 1,
                 likesCount: 1,
-                isLiked: 1
+                isLiked: 1,
+                subscribers: 1,
+                isSubscribed: 1
             }
         }
     ]);
-
     if (!video.length) {
-        throw new ApiError(404, "Video not found");
+      throw new ApiError(404, "Video not found");
     }
-
-    res.status(200).json(new ApiResponse(200, {video:video.length ? video[0] : null}, "Video fetched successfully"));
+    return res.status(200).json(new ApiResponse(200, {video:video.length ? video[0] : null}, "Video fetched successfully"));
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {

@@ -3,7 +3,7 @@ import VideoLibrary from '../video/pages/VideoLibrary'
 
 function Home() {
   return (
-     <div className='w-full h-full'>
+     <div className='py-2 px-5 w-full h-full'>
         <VideoLibrary>
           {Children}
         </VideoLibrary>

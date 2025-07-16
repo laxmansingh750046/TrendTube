@@ -55,7 +55,7 @@ function Header() {
   };
    
   return (
-    <header className='fixed z-50 w-full'>
+    <header className='fixed h-20 z-50 w-full'>
       <div className="relative py-3 shadow bg-slate-900 text-white">
         <Container>
           <div className="flex items-center justify-between">

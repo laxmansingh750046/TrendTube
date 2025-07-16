@@ -37,7 +37,7 @@ function VideoCard({ video , onVideoDeleted =null, onVideoDeleteError = null}) {
       <div className="h-[35%] flex gap-3 pt-2">
         {/* Logo Section 1st container*/}
         <div className="flex-shrink-0">
-          <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-600">
+          <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-600">
             <img
               src={video.avatar}
               alt="Channel Logo"
@@ -50,7 +50,7 @@ function VideoCard({ video , onVideoDeleted =null, onVideoDeleteError = null}) {
        <div className="flex flex-col w-full">
           {/* Video Description (50%) */}
           <div className="mb-2">
-            <h3 className="text-white font-semibold text-2xl leading-tight line-clamp-2">
+            <h3 className="text-white font-semibold text-base leading-tight line-clamp-2">
               {video.title}
             </h3>
           </div>
@@ -58,12 +58,12 @@ function VideoCard({ video , onVideoDeleted =null, onVideoDeleteError = null}) {
             <Link to={`/u/${video.username}/videos`}
               onClick={(e)=>e.stopPropagation()}
             >
-              <div className="text-gray-300 text-base opacity-80 hover:text-white hover:text-xl">
+              <div className="text-gray-300 text-md opacity-80 hover:text-white hover:text-xl">
                 {video.username}
               </div>
             </Link>
 
-            <div className="flex items-center text-white text-base opacity-70">
+            <div className="flex items-center text-white text-sm opacity-70">
               <span>{video.views} views</span>
               <span className="mx-1">•</span>
               <span>{formatTime(video.createdAt)}</span>
