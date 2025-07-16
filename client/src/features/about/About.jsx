@@ -22,7 +22,7 @@ export default function About() {
     </ul>
 
       <div className="mt-8">
-        <a href="[Your Portfolio]" className="text-purple-400 hover:underline">
+        <a href="https://portfolio-jet-kappa-56.vercel.app/" className="text-purple-400 hover:underline">
           Visit my portfolio →
         </a>
       </div>

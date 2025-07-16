@@ -7,7 +7,6 @@ import VideoOptionsMenu from './VideoOptionsMenu.jsx';
 function VideoCard({ video , onVideoDeleted =null, onVideoDeleteError = null}) {
   const navigate= useNavigate();
   const publicId = extractPublicId(video.videoFile);
-  const duration=formatDuration(video.duration);
 
   const onDelete = ()=>{
     if(onVideoDeleted)onVideoDeleted(video._id, video.title);
@@ -28,8 +27,8 @@ function VideoCard({ video , onVideoDeleted =null, onVideoDeleteError = null}) {
           className="w-full h-full object-cover rounded-xl"
           alt={video.title}
           />
-          <div className='flex items-center justify-center absolute bg-slate-700 rounded-[7px] px-2 right-4 bottom-3'>
-            <span className='text-gray-300 text-2xl'>{duration}</span>
+          <div className='flex items-center justify-center absolute bg-slate-800 rounded-[7px] px-2 right-4 bottom-3'>
+            <span className='text-gray-300 text-base'>{formatDuration(video.duration)}</span>
           </div>
       </div>
 

@@ -46,7 +46,7 @@ function App() {
         }
        
         <div className={`flex-1 transition-all duration-300 
-          ${hideNav ? "p-0": (isNavMinimized ? "sm:pl-16" : "sm:pl-52")} 
+          ${hideNav ? "p-0": (isNavMinimized ? "md:pl-16" : "md:pl-52")} 
           flex flex-col min-h-[calc(100vh-4rem)]
           `}
         >

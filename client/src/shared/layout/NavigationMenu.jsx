@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import LogoutConfirmation from '../../features/auth/pages/LogoutConfirmation.jsx';
@@ -13,13 +14,65 @@ import {
   UserPlus,
   ChevronLeft,
   ChevronRight,
-  Info
+  Info,
+  MoreVertical
 } from 'lucide-react';
+
+function MobileMoreOptions({ options, onClose, authStatus }) {
+  const ref = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
+
+  return (
+    <div 
+      ref={ref}
+      className="fixed bottom-16 right-2 bg-slate-800 rounded-lg shadow-lg z-50 border border-slate-700"
+    >
+      <div className="py-1 text-white">
+        {options.map(
+          (item) =>
+            item.active && (
+              <NavLink
+                key={item.name}
+                to={item.slug}
+                onClick={onClose}
+                className={({ isActive }) => 
+                  `flex items-center space-x-3 px-4 py-2 ${
+                    isActive ? 'bg-slate-600' : 'hover:bg-slate-500'
+                  }`
+                }
+              >
+                {item.icon}
+                <span>{item.name}</span>
+              </NavLink>
+            )
+        )}
+        {authStatus && (
+          <div className="p-2 border-t border-slate-700">
+            <LogoutConfirmation/>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 function NavigationMenu({ isMinimized, toggleMinimize }) {
   const username = useSelector((state) => state.auth.user?.username);
   const authStatus = useSelector((state) => state.auth.status);
   const navigate = useNavigate();
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
 
   const authItems = [
     { name: 'Login', slug: '/login', icon: <LogIn size={20} />, active: !authStatus },
@@ -38,6 +91,16 @@ function NavigationMenu({ isMinimized, toggleMinimize }) {
     { name: 'Liked Videos', slug: '/liked-videos', icon: <ThumbsUp size={20} />, active: authStatus },
     { name: 'About', slug: '/about', icon: <Info size={20} />, active: true },
   ];
+
+  const mobileMoreOptions = [
+    { name: 'History', slug: '/history', icon: <History size={20} />, active: authStatus },
+    { name: 'Playlists', slug: '/playlists', icon: <Play size={20} />, active: authStatus },
+    { name: 'Liked Videos', slug: '/liked-videos', icon: <ThumbsUp size={20} />, active: authStatus },
+  ];
+
+  const toggleMoreOptions = () => {
+    setShowMoreOptions(!showMoreOptions);
+  };
 
   return (
     <>
@@ -227,9 +290,30 @@ function NavigationMenu({ isMinimized, toggleMinimize }) {
               <Info size={20} />
               <span className="text-xs mt-1">About</span>
             </NavLink>
+            
+            {/* More Options Button */}
+            <button
+              onClick={toggleMoreOptions}
+              className={`flex flex-col items-center p-2 rounded ${
+                showMoreOptions ? 'bg-slate-600' : 'hover:bg-slate-500'
+              }`}
+              title="More"
+            >
+              <MoreVertical size={20} />
+              <span className="text-xs mt-1">More</span>
+            </button>
           </>
         )}
       </div>
+
+      {/* Mobile More Options Menu */}
+      {showMoreOptions && (
+        <MobileMoreOptions 
+          options={mobileMoreOptions} 
+          onClose={() => setShowMoreOptions(false)} 
+          authStatus={authStatus}
+        />
+      )}
     </>
   );
 }

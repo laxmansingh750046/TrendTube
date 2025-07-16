@@ -14,6 +14,7 @@ function Header() {
   // Get auth state from Redux
   const isLoggedIn = useSelector(state => state.auth.status);
   const avatarUrl = useSelector(state => state.auth.user?.avatar);
+  const username = useSelector(state => state.auth.user?.username);
 
   useEffect(() => {
     const handleResize = () => {
@@ -121,7 +122,7 @@ function Header() {
 
               {/* Show avatar if user is logged in */}
               {isLoggedIn && avatarUrl && (
-                <Link to="/profile">
+                <Link to={`/u/${username}`}>
                   <img 
                     src={avatarUrl} 
                     alt="User Avatar"
