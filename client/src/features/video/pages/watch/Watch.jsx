@@ -16,6 +16,8 @@ const [video, setVideo] = useState(null);
 const [searchParams] = useSearchParams();
 const [isMediumScreen, setIsMediumScreen] = useState(window.innerWidth < 1536);
 const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640);
+const publicId = searchParams.get("pi");
+const videoId = searchParams.get("vi");
 
   useEffect(() => {
       const handleResize = () => {
@@ -56,23 +58,20 @@ const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640);
       };
     }, []);
 
-    useEffect(() => {
-      const videoId = searchParams.get("vi");
-      if (!videoId || video) return;
-      const fetchvideo = async () => {
-        try {
-          const res = await videoService.getVideoById(videoId);
-          setVideo(res.data?.data?.video);
-        } catch (error) {
-          console.error(error);
-        }
-      };
+  useEffect(() => {
+    const videoId = searchParams.get("vi");
+    if (!videoId) return;
+    const fetchvideo = async () => {
+      try {
+        const res = await videoService.getVideoById(videoId);
+        setVideo(res.data?.data?.video);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-      fetchvideo();
-    }, [searchParams]);
-
-  const publicId = searchParams.get("pi");
-  const videoId = searchParams.get("vi");
+    fetchvideo();
+  }, [searchParams,videoId,publicId]);
 
   return (
     <div className="w-full h-full mx-auto mt-3 flex flex-row gap-x-[1px] items-stretch justify-center">

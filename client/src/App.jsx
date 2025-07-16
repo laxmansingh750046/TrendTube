@@ -50,7 +50,7 @@ function App() {
           flex flex-col min-h-[calc(100vh-4rem)]
           `}
         >
-          <main className="bg-slate-800 mt-20">
+          <main className="bg-slate-900 mt-20">
             <Outlet />
           </main>
         </div>
