@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import {Share2, MoreVertical} from 'lucide-react'
 import formatNumber from '../../../../shared/utils/formatNumber.js';
 import SubscribeButton from '../../../../shared/components/SubscribeButton.jsx';
+import ShareVideoButton from '../../components/ShareVideoButton.jsx';
 
 function Watch() {
 const [video, setVideo] = useState(null);
@@ -119,7 +120,7 @@ const videoId = searchParams.get("vi");
                                     <VideoLikeButton key={video._id} isLiked={video.isLiked} likesCount={video.likesCount} videoId={video._id} />
                                   </div>
                                   <div className='flex justify-center items-center h-10 w-20 bg-gray-700 hover:bg-gray-500 rounded-2xl'>
-                                    <button><Share2 /></button>
+                                    <ShareVideoButton videoUrl={window.location.href} />
                                   </div>
                                   <div className='flex justify-center items-center h-10 w-20 bg-gray-700 hover:bg-gray-500 rounded-2xl'>
                                     <button><MoreVertical /></button>
@@ -135,8 +136,8 @@ const videoId = searchParams.get("vi");
                                   <div className='flex justify-center items-center h-10 w-16 bg-gray-700 hover:bg-gray-500 rounded-2xl'>
                                     <VideoLikeButton key={video._id} isLiked={video.isLiked} likesCount={video.likesCount} videoId={video._id} />
                                   </div>
-                                  <div className='flex justify-center items-center h-10 w-16 bg-gray-700 hover:bg-gray-500 rounded-2xl'>
-                                    <button><Share2 /></button>
+                                  <div className='flex justify-center items-center h-10 w-20 bg-gray-700 hover:bg-gray-500 rounded-2xl'>
+                                    <ShareVideoButton videoUrl={window.location.href} />
                                   </div>
                                   <div className='flex justify-center items-center h-10 w-16 bg-gray-700 hover:bg-gray-500 rounded-2xl'>
                                     <button><MoreVertical /></button>
