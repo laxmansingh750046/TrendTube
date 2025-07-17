@@ -39,7 +39,6 @@ function Login() {
       setLoading(false);
     }
   };
-  console.log("but cout2");
   return (
    <LoadOverLay loading={loading}> 
     <div className="flex items-center justify-center w-full">

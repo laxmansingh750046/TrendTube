@@ -3,11 +3,13 @@ import { useSelector } from 'react-redux';
 import { MoreVertical, Trash2, Share2, ListPlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AddToPlaylist from '../../playlist/page/AddToPlaylist.jsx';
+import ShareVideoButton from './ShareVideoButton.jsx';
 
 export default function VideoOptionsMenu({ videoId, publicId, isOwner = false, onDelete, onDeleteError }) {
   const [showOptions, setShowOptions] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+  const [showShare,setShowShare] = useState(false);
   const optionsRef = useRef(null);
 
   // Check if user is logged in
@@ -18,17 +20,18 @@ export default function VideoOptionsMenu({ videoId, publicId, isOwner = false, o
       setShowOptions(false);
       setShowConfirm(false);
       setShowPlaylistModal(false);
+      setShowShare(false);
     }
   };
 
   useEffect(() => {
-    if (showOptions || showConfirm || showPlaylistModal) {
+    if (showOptions) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showOptions, showConfirm, showPlaylistModal]);
+  }, [showOptions]);
 
   const handleShare = (e) => {
     e.stopPropagation();
@@ -88,11 +91,18 @@ export default function VideoOptionsMenu({ videoId, publicId, isOwner = false, o
             )}
             <button 
               className="flex items-center w-full px-4 py-2 text-gray-300 hover:bg-slate-700"
-              onClick={handleShare}
+              onClick={()=>setShowShare(!showShare)}
             >
               <Share2 className="mr-2" size={16} />
               Share
             </button>
+            {showShare && (
+              <ShareVideoButton 
+              className="flex items-center w-full px-4 py-2 text-gray-300 hover:bg-slate-700"
+              videoUrl={`${window.location.href}/watch?pi=${publicId}&vi=${videoId}`}
+              hideShare={true}
+            />
+            )}
             {isLoggedIn && (
               <button 
                 className="flex items-center w-full px-4 py-2 text-gray-300 hover:bg-slate-700"

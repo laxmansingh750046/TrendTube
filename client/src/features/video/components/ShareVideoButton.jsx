@@ -1,5 +1,5 @@
 import { Share2, ClipboardCopy } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { 
   FacebookIcon, 
   XIcon, 
@@ -7,10 +7,21 @@ import {
   LinkedInIcon 
 } from "../../../shared/icons";
 
-export default function ShareVideoButton({ videoUrl }) {
-  const [showOptions, setShowOptions] = useState(false);
+export default function ShareVideoButton({ videoUrl, className="",hideShare=false }) {
+  const [showOptions, setShowOptions] = useState(hideShare);
   const [copied, setCopied] = useState(false);
   const encodedUrl = encodeURIComponent(videoUrl);
+  const optionsRef = useRef(null);
+  
+  useEffect(()=>{
+     const handleClickOutside = (e)=>{
+        if(optionsRef.current && !optionsRef.current.contains(e.target)){
+          setShowOptions(false);
+        }
+      }
+      if(showOptions)document.addEventListener('mousedown', handleClickOutside);
+      return ()=> removeEventListener('mousedown', handleClickOutside);
+  }, [showOptions]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(videoUrl);
@@ -20,19 +31,28 @@ export default function ShareVideoButton({ videoUrl }) {
       setShowOptions(false);
     }, 1500);
   };
-
+ 
   return (
-    <div className="relative">
-      <button
-        onClick={() => setShowOptions(!showOptions)}
-        className="flex justify-center items-center gap-1 h-10 w-20 px-4 bg-gray-700 hover:bg-gray-600 rounded-2xl transition-colors"
-        aria-label="Share video"
-      >
-        <Share2 size={18} />
-      </button>
+    <div className="relative"
+         ref={optionsRef}
+    >
+     {
+       !hideShare && (
+          <button
+            onClick={() => setShowOptions(!showOptions)}
+            className="flex justify-center items-center gap-1 h-10 w-20 px-4 bg-gray-700 hover:bg-gray-600 rounded-2xl transition-colors"
+            aria-label="Share video"
+          >
+            <Share2 size={18} />
+          </button>
+       )
+     }
 
       {showOptions && (
-        <div className="absolute z-20 right-0 mt-2 bg-gray-800 border border-gray-600 shadow-lg p-3 rounded-lg w-48">
+        <div 
+         className={`absolute z-20 ${className} mt-2 bg-gray-800 border 
+             border-gray-600 shadow-lg p-3 rounded-lg w-48`}
+        >
           <div className="flex flex-col gap-2">
             <p className="text-xs text-gray-300 mb-1">Share via</p>
             

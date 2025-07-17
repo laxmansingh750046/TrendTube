@@ -120,7 +120,7 @@ const videoId = searchParams.get("vi");
                                     <VideoLikeButton key={video._id} isLiked={video.isLiked} likesCount={video.likesCount} videoId={video._id} />
                                   </div>
                                   <div className='flex justify-center items-center h-10 w-20 bg-gray-700 hover:bg-gray-500 rounded-2xl'>
-                                    <ShareVideoButton videoUrl={window.location.href} />
+                                    <ShareVideoButton videoUrl={window.location.href} className={"right-0"}/>
                                   </div>
                                   <div className='flex justify-center items-center h-10 w-20 bg-gray-700 hover:bg-gray-500 rounded-2xl'>
                                     <button><MoreVertical /></button>
@@ -137,7 +137,7 @@ const videoId = searchParams.get("vi");
                                     <VideoLikeButton key={video._id} isLiked={video.isLiked} likesCount={video.likesCount} videoId={video._id} />
                                   </div>
                                   <div className='flex justify-center items-center h-10 w-20 bg-gray-700 hover:bg-gray-500 rounded-2xl'>
-                                    <ShareVideoButton videoUrl={window.location.href} />
+                                    <ShareVideoButton videoUrl={window.location.href} className={"left-0"} />
                                   </div>
                                   <div className='flex justify-center items-center h-10 w-16 bg-gray-700 hover:bg-gray-500 rounded-2xl'>
                                     <button><MoreVertical /></button>
