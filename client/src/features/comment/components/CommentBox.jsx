@@ -3,7 +3,7 @@ import Button from "../../../shared/components/Button.jsx";
 import AuthPrompt from "../../auth/components/AuthPrompt.jsx";
 import {useSelector} from 'react-redux'
 
-const CommentBox = ({ onSubmit, actionType="comment", autoFocus = false }) => {
+const CommentBox = ({ onSubmit, actionType="comment", autoFocus = false, commentRef=null }) => {
   const [text, setText] = useState("");
   const [showLoggedInMessage, setShowLoggedInMessage] = useState(false);
   const isLoggedIn = useSelector(state => state.auth.status);
@@ -26,6 +26,7 @@ const CommentBox = ({ onSubmit, actionType="comment", autoFocus = false }) => {
   return (
     <form onSubmit={handelSubmit} className="flex flex-col gap-2">
       <textarea
+        ref={commentRef}
         className="w-full text-white text-xl bg-slate-900 p-2 border border-slate-600 rounded resize-none focus:outline-none focus:ring"
         rows="3"
         placeholder={actionType === "comment" ? "Add a comment..." : "Write a reply..."}

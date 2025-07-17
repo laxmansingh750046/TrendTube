@@ -4,7 +4,7 @@ import commentService from '../api/index.js';
 import CommentBox from '../components/CommentBox.jsx';
 
 
-function CommentsSection({ videoId }) {
+function CommentsSection({ videoId ,commentRef=null}) {
 
   const [comments, setComments] = useState([]);
   const [error, setError] = useState(null);
@@ -61,7 +61,7 @@ function CommentsSection({ videoId }) {
     <div>
       {/* //comment here */}
       <div>
-        <CommentBox onSubmit={handelComment} />
+        <CommentBox onSubmit={handelComment} commentRef={commentRef}/>
       </div>
       <CommentList 
         comments={comments}

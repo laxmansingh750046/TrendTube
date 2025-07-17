@@ -105,7 +105,7 @@ function NavigationMenu({ isMinimized, toggleMinimize }) {
   return (
     <>
       {/* Desktop Navigation */}
-      <div className={`hidden md:block fixed top-20 z-40 ${isMinimized ? 'w-16' : 'w-52'} h-[87vh] bg-slate-800 text-white flex flex-col transition-all duration-300`}>
+      <div className={`hidden md:block fixed top-20 z-44 ${isMinimized ? 'w-16' : 'w-52'} h-[87vh] bg-slate-800 text-white flex flex-col transition-all duration-300`}>
         {/* Minimize Button */}
         <button 
           onClick={toggleMinimize}

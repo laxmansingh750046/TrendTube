@@ -19,6 +19,10 @@ const [isMediumScreen, setIsMediumScreen] = useState(window.innerWidth < 1536);
 const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640);
 const publicId = searchParams.get("pi");
 const videoId = searchParams.get("vi");
+const viewTimerRef = useRef(null);
+const videoRef = useRef(null);
+const rcommentRef = useRef(null);
+const bcommentRef = useRef(null);
 
   useEffect(() => {
       const handleResize = () => {
@@ -32,9 +36,7 @@ const videoId = searchParams.get("vi");
      return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const viewTimerRef = useRef(null);
-
-   const onPlay = () => {
+  const onPlay = () => {
       if (viewTimerRef.current || !video?._id) return;
       
       const durationInSeconds = Number(video.duration);
@@ -51,13 +53,13 @@ const videoId = searchParams.get("vi");
       }, waitTime);
   };
 
-   useEffect(() => {
+  useEffect(() => {
       return () => {
         if (viewTimerRef.current) {
           clearTimeout(viewTimerRef.current);
         }
       };
-    }, []);
+  }, []);
 
   useEffect(() => {
     const videoId = searchParams.get("vi");
@@ -73,7 +75,35 @@ const videoId = searchParams.get("vi");
 
     fetchvideo();
   }, [searchParams,videoId,publicId]);
+  
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const videoEl = videoRef.current;
+      if (!videoEl) return;
+      const isVideoFocused = document.activeElement === videoEl;
+      // if(document.activeElement === rcommentRef.current
+      //    || document.activeElement === bcommentRef.current    
+      // )return;
+      
+      // if (e.code === "Space") {
+      //   e.preventDefault();
+      //   if(!isVideoFocused)(videoEl.paused)?videoEl.play():videoEl.pause();
+      // }
 
+      if (e.code === "KeyF" && isVideoFocused) {
+        if (document.fullscreenElement)document.exitFullscreen();
+        else {
+          videoEl.requestFullscreen().catch(err => {
+            console.error("Fullscreen error:", err);
+          });
+        }
+      }
+    };
+
+  document.addEventListener("keydown", handleKeyDown);
+  return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [video]);
+ 
   return (
     <div className="w-full h-full mx-auto mt-3 flex flex-row gap-x-[1px] items-stretch justify-center">
      
@@ -83,7 +113,7 @@ const videoId = searchParams.get("vi");
           {/* left container */}
           <div className={`h-full ${isMediumScreen?"w-full":"w-[60%]"} px-[4px] flex flex-col items-stretch  gap-y-[1px]`}>
             <div className="flex">
-              <VideoPlayer publicId={publicId} onPlay={onPlay}/>
+              <VideoPlayer publicId={publicId} onPlay={onPlay} videoRef={videoRef}/>
             </div>
 
           
@@ -150,7 +180,7 @@ const videoId = searchParams.get("vi");
                     description={video.description} updatedAt={video.updatedAt}/>
             </div>
           
-            <CommentAndUpnext videoId={videoId} initialTab={"upnext"}/>
+            <CommentAndUpnext videoId={videoId} initialTab={"upnext"} commentRef={bcommentRef}/>
           </div>
           </>
         ) : (
@@ -160,7 +190,7 @@ const videoId = searchParams.get("vi");
       {/* right container */}
       {!isMediumScreen && (
         <div className='text-white w-[35%] h-full flex flex-col items-stretch space-y-2'>
-           {video && (<CommentAndUpnext videoId={videoId} comment={true}/>)}
+           {video && (<CommentAndUpnext videoId={videoId} comment={true} commentRef={rcommentRef}/>)}
         </div>
       )}
     </div>

@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Comments from '../../components/Comments.jsx';
 import UpNext from '../../components/UpNext.jsx';
 
-export default function CommentAndUpnext({ videoId, initialTab = 'comments' }) {
+export default function CommentAndUpnext({ videoId, initialTab = 'comments' ,commentRef=null}) {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [direction, setDirection] = useState(null);
-
+ 
   const handleTabChange = (newTab) => {
     if (newTab !== activeTab) {
       setDirection(newTab === 'comments' ? 'right' : 'left');
@@ -49,7 +49,7 @@ export default function CommentAndUpnext({ videoId, initialTab = 'comments' }) {
             ? 'translate-x-0' 
             : '-translate-x-full absolute'
         }`}>
-          <Comments key={`${videoId}-comments`} videoId={videoId} />
+          <Comments key={`${videoId}-comments`} videoId={videoId} commentRef={commentRef}/>
         </div>
         
         <div className={`w-full transition-transform duration-500 ease-in-out ${

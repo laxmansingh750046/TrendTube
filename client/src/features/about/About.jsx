@@ -1,7 +1,7 @@
 // pages/about.js
 export default function About() {
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-slate-800 rounded-lg">
+    <div className="max-w-2xl mx-auto p-6 bg-slate-800 rounded-lg flext flex-col items-center">
       <h1 className="text-3xl font-bold text-purple-500 mb-4">About Me</h1>
       <p className="text-gray-300 mb-4">
         Hi! I'm Laxman Singh Bisht, a full stack developer passionate about building TrendTube.
