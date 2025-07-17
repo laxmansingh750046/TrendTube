@@ -74,18 +74,9 @@ function EditProfile() {
           )}
 
           {activeTab === "avatar" && (
-            <div>
+            <div className="flex flex-col justify-center items-center">
               <h2 className="text-xl font-semibold mb-4">Profile Picture</h2>
-              <div className="flex items-center gap-6 mb-6">
-                <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
-                  <img 
-                    src={user.avatar || "/default-avatar.png"} 
-                    alt="Profile" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <ChangeAvatarForm onUpload={fetchProfile} />
-              </div>
+                <ChangeAvatarForm avatar={user.avatar} onUpload={fetchProfile} />
             </div>
           )}
 

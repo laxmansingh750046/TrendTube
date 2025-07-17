@@ -6,15 +6,17 @@ import { Button, InputField, Logo } from '../../../shared/components/index.js'
 import { useDispatch } from 'react-redux'
 import { useForm } from 'react-hook-form'
 import LoadOverLay from '../../../shared/components/LoadOverLay.jsx'
-import { FiUpload, FiUser, FiMail, FiLock, FiImage, FiX } from 'react-icons/fi'
+import { FiUpload, FiUser, FiMail, FiLock, FiImage, FiX ,FiEyeOff, FiEye} from 'react-icons/fi'
 
 function RegisterForm() {
-  const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
-  const dispatch = useDispatch()
-  const [error, setError] = useState('')
   const [avatarPreview, setAvatarPreview] = useState(null)
-  const [coverPreview, setCoverPreview] = useState(null)
+  const [coverPreview, setCoverPreview] = useState(null)  
+  const [showPassword, setShowPassword] = useState(false);
+  
+  const [error, setError] = useState('')
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm()
 
   const handleAvatarChange = (e) => {
@@ -26,16 +28,6 @@ function RegisterForm() {
       }
       reader.readAsDataURL(file)
     }
-  }
-  
-  const getInitials = (name) => {
-    if (!name) return ''
-    const names = name.split(' ')
-    let initials = names[0].substring(0, 1).toUpperCase()
-    if (names.length > 1) {
-      initials += names[names.length - 1].substring(0, 1).toUpperCase()
-    }
-    return initials
   }
 
   const handleCoverChange = (e) => {
@@ -83,7 +75,7 @@ function RegisterForm() {
       if (accountCreated) {
         const userData = await authServices.getCurrentUser()
         if (userData) {
-          dispatch(setUser({ user: userData.user }))
+          dispatch(setUser({ user: userData.data.user }))
         }
         navigate('/')
       }
@@ -118,7 +110,7 @@ function RegisterForm() {
           )}
 
           <form onSubmit={handleSubmit(createAccount)} className="space-y-4">
-            <div className="grid grid-cols-1 gap-4">
+            <div className="flex flex-col items-start justify-center gap-y-3">
               <InputField
                 label="Username"
                 placeholder="john_doe"
@@ -150,20 +142,27 @@ function RegisterForm() {
                 icon={<FiUser className="text-gray-400" />}
               />
 
-              <InputField
-                label="Password"
-                type="password"
-                placeholder="password"
-                error={errors.password}
-                {...register('password', {
-                  required: 'Password is required',
-                  minLength: {
-                    value: 6,
-                    message: 'Password must be at least 6 characters'
-                  }
-                })}
-                icon={<FiLock className="text-gray-400" />}
-              />
+                 <InputField
+                    label="Password"
+                    type={showPassword ? 'text' : 'password'}
+                    error={errors.password}
+                    {...register('password', {
+                      required: 'Password is required',
+                      minLength: {
+                        value: 6,
+                        message: 'Password must be at least 6 characters',
+                      },
+                    })}
+                    icon={<FiLock className="text-gray-400" />}
+                />
+                <button
+                    type="button"
+                    className="right-3 top-9 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <FiEyeOff size={18}/> : <FiEye size={18}/>}
+                </button>
 
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">

@@ -2,7 +2,7 @@ import { useState } from "react";
 import userService from "../services/userService";
 import { toast } from "react-hot-toast";
 
-function ChangeAvatarForm({ onUpload }) {
+function ChangeAvatarForm({avatar, onUpload }) {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,8 +39,16 @@ function ChangeAvatarForm({ onUpload }) {
 
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-center gap-x-5">
+          <div className="w-24 h-24 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-gray-200">
+          <img 
+            src={avatar} 
+            alt="Preview" 
+            className="w-full h-full object-cover"
+          />
+        </div>
       {preview && (
-        <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
+        <div className="w-24 h-24 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-gray-200">
           <img 
             src={preview} 
             alt="Preview" 
@@ -48,6 +56,7 @@ function ChangeAvatarForm({ onUpload }) {
           />
         </div>
       )}
+      </div>
       
       <input 
         type="file" 
