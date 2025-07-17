@@ -85,7 +85,12 @@ function RegisterForm() {
       setLoading(false)
     }
   }
-
+  
+  const onFormError = (formErrors) => {
+    console.log('Validation Errors:', formErrors)
+    if(formErrors.password.message)setError(formErrors.password.message);
+    else setError('Please fix the highlighted fields')
+  }
   return (
     <LoadOverLay loading={loading}>
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -109,7 +114,7 @@ function RegisterForm() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit(createAccount)} className="space-y-4">
+          <form onSubmit={handleSubmit(createAccount, onFormError)} className="space-y-4">
             <div className="flex flex-col items-start justify-center gap-y-3">
               <InputField
                 label="Username"
